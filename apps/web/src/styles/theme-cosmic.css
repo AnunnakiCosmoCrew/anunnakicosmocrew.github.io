@@ -1,0 +1,103 @@
+/*
+ * Cosmic dark theme — apps/web only (ADR 0007).
+ *
+ * Everything in this file is scoped to dark mode: light-mode visitors keep the
+ * existing look untouched, and the shared @cosmocrew/design tokens stay
+ * theme-neutral (apps/metrics imports them too and must not change).
+ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Deepen the ground so surfaces read as lit against space. */
+    --c-bg: #0b0c11;
+
+    /* Cosmic accents */
+    --c-glow: color-mix(in srgb, var(--c-accent) 55%, transparent);
+    --c-nebula-2: #b48cf0;
+    --shadow-glow:
+      0 0 0 1px color-mix(in srgb, var(--c-accent) 25%, var(--c-border)),
+      0 0 28px color-mix(in srgb, var(--c-accent) 18%, transparent);
+  }
+
+  /* The star/nebula layers use negative z-index; isolate body so they stack
+     against body's own context and can never fall behind the page background. */
+  body {
+    isolation: isolate;
+  }
+
+  /* Nebula wash — sits behind everything. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        55% 40% at 18% 8%,
+        color-mix(in srgb, var(--c-accent) 9%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        45% 35% at 85% 18%,
+        color-mix(in srgb, var(--c-nebula-2) 7%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        60% 50% at 60% 95%,
+        color-mix(in srgb, var(--c-accent) 5%, transparent),
+        transparent 75%
+      );
+  }
+
+  /* Starfield — two tiled layers at different densities for depth. */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      radial-gradient(1px 1px at 25px 35px, rgba(236, 236, 239, 0.85), transparent 55%),
+      radial-gradient(1px 1px at 120px 190px, rgba(236, 236, 239, 0.6), transparent 55%),
+      radial-gradient(1.5px 1.5px at 210px 80px, rgba(236, 236, 239, 0.75), transparent 55%),
+      radial-gradient(1px 1px at 320px 260px, rgba(236, 236, 239, 0.5), transparent 55%),
+      radial-gradient(1px 1px at 400px 140px, rgba(236, 236, 239, 0.7), transparent 55%),
+      radial-gradient(1.5px 1.5px at 60px 320px, rgba(180, 140, 240, 0.55), transparent 55%),
+      radial-gradient(1px 1px at 280px 420px, rgba(236, 236, 239, 0.6), transparent 55%),
+      radial-gradient(1px 1px at 450px 380px, rgba(236, 236, 239, 0.45), transparent 55%),
+      radial-gradient(2px 2px at 160px 470px, rgba(140, 144, 240, 0.5), transparent 55%),
+      radial-gradient(1px 1px at 380px 30px, rgba(236, 236, 239, 0.55), transparent 55%),
+      radial-gradient(1.5px 1.5px at 90px 640px, rgba(236, 236, 239, 0.6), transparent 55%),
+      radial-gradient(1px 1px at 560px 540px, rgba(236, 236, 239, 0.5), transparent 55%);
+    background-size:
+      480px 480px,
+      480px 480px,
+      480px 480px,
+      480px 480px,
+      480px 480px,
+      480px 480px,
+      480px 480px,
+      480px 480px,
+      720px 720px,
+      720px 720px,
+      720px 720px,
+      720px 720px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    body::after {
+      animation: star-twinkle 9s ease-in-out infinite;
+    }
+  }
+
+  @keyframes star-twinkle {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+}

@@ -19,6 +19,12 @@
       0 0 28px color-mix(in srgb, var(--c-accent) 18%, transparent);
   }
 
+  /* The star/nebula layers use negative z-index; isolate body so they stack
+     against body's own context and can never fall behind the page background. */
+  body {
+    isolation: isolate;
+  }
+
   /* Nebula wash — sits behind everything. */
   body::before {
     content: '';

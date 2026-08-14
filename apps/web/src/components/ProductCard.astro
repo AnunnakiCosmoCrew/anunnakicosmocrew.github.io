@@ -216,4 +216,21 @@ const chips = chipDefs
       border-color: color-mix(in srgb, var(--c-accent) 40%, var(--c-border));
     }
   }
+
+  /* Cosmic dark treatment (ADR 0007): cards glow softly and the app icons are
+     the light sources. Light mode is untouched. */
+  @media (prefers-color-scheme: dark) {
+    .card {
+      box-shadow: var(--shadow-glow);
+      border-color: color-mix(in srgb, var(--c-accent) 18%, var(--c-border));
+    }
+    .card:hover {
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--c-accent) 45%, var(--c-border)),
+        0 0 40px color-mix(in srgb, var(--c-accent) 30%, transparent);
+    }
+    .card-icon {
+      filter: drop-shadow(0 0 12px var(--c-glow));
+    }
+  }
 </style>

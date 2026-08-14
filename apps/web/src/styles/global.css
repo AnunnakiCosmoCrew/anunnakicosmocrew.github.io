@@ -1,4 +1,5 @@
 @import '@cosmocrew/design/tokens.css';
+@import './theme-cosmic.css';
 
 /* ---------- Reset ---------- */
 *,

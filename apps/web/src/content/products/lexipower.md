@@ -10,7 +10,7 @@ icon: "./icons/lexipower.png"
 links:
   website: "https://lexipower.app"
   appStore: "https://apps.apple.com/app/id6766093282"
-  support: "https://anunnakicosmocrew.github.io/lexipower-support/"
+  support: "https://cosmocrew.dev/lexipower-support/"
 featured: true
 metricsEnabled: false
 order: 2

@@ -14,7 +14,10 @@ import sitemap from '@astrojs/sitemap';
 // has to ship *inside the build output* or each deploy clears the custom
 // domain. See adr/0008.
 //
-// `anunnakicosmocrew.github.io` still resolves; GitHub redirects it here.
+// The redirect from `anunnakicosmocrew.github.io` is a property of the Pages
+// custom-domain setting, not of this file: with the domain set, that host
+// 301s here; without it, GitHub keeps serving the site there instead.
+//
 // Every internal link is built with `withBase()` (src/lib/url.ts), so the base
 // path stays `/` and nothing else needs to change.
 // -----------------------------------------------------------------------------

@@ -8,7 +8,7 @@ support, and docs.
 - **Framework:** [Astro](https://astro.build) (static output, TypeScript)
 - **Styling:** hand-written modern CSS with design tokens (no UI framework)
 - **Hosting:** GitHub Pages, deployed via GitHub Actions
-- **Live URL:** https://cosmocrew.dev/
+- **Canonical URL:** https://cosmocrew.dev/ (see `adr/0008`)
 
 This repo is a small **npm-workspaces monorepo**:
 

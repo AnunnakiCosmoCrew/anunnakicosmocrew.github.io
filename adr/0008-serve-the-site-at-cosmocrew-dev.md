@@ -46,11 +46,21 @@ exists, if the edge features are ever wanted.
 
 ## Consequences
 
-- The canonical public URL is `https://cosmocrew.dev/`. GitHub redirects
-  `anunnakicosmocrew.github.io` to it, so old links keep working.
+- The canonical public URL is `https://cosmocrew.dev/`. Once the Pages
+  custom domain is set, GitHub 301s `anunnakicosmocrew.github.io` to it and
+  old links keep working — the redirect comes from that setting, so it holds
+  only while the domain is configured, and the `github.io` host serves the
+  site directly whenever it is not.
 - `site:` feeds `@astrojs/sitemap` and the absolute canonical/OG URLs, so the
   sitemap and social cards now reference the custom domain. `robots.txt` is a
   static file and was updated by hand — it is not templated from `site`.
+- Between this landing and DNS going live there is a window where the built
+  sitemap and canonical/OG URLs name a host that does not yet resolve.
+  Accepted rather than engineered around: gating `site` behind a deploy-time
+  env var would give the canonical host two sources of truth and contradict
+  the config-only simplicity this and ADR 0006 are built on. The window is
+  bounded by one DNS change, and the fix if it is ever mis-sequenced is to
+  unset the Pages custom domain, not to change code.
 - **Project Pages sites in the org inherit this domain**: repos with no custom
   domain of their own are now served at `cosmocrew.dev/<repo>/`. The
   `lexipower-support` and `slicefocus-docs` links in the site were updated to

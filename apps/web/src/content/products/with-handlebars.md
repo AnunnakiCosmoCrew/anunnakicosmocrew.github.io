@@ -8,7 +8,7 @@ category: Music
 platform: Web
 icon: "./icons/with-handlebars.png"
 links:
-  website: "https://withhandlbars.com"
+  website: "https://withhandlebars.com"
   github: "https://github.com/AnunnakiCosmoCrew/with-handlebars-web"
 featured: true
 metricsEnabled: false

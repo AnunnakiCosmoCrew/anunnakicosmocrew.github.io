@@ -8,7 +8,7 @@ support, and docs.
 - **Framework:** [Astro](https://astro.build) (static output, TypeScript)
 - **Styling:** hand-written modern CSS with design tokens (no UI framework)
 - **Hosting:** GitHub Pages, deployed via GitHub Actions
-- **Live URL:** https://anunnakicosmocrew.github.io/
+- **Canonical URL:** https://cosmocrew.dev/ (see `adr/0008`)
 
 This repo is a small **npm-workspaces monorepo**:
 
@@ -50,7 +50,8 @@ Run from the repo root (scripts fan out to the workspaces):
 | `npm run deploy:api`    | Deploy the metrics API Worker (`wrangler deploy`)                 |
 
 > Both apps are served from the root (`/`): the repo is the org Pages site
-> (`anunnakicosmocrew.github.io`), so there is no sub-path — see `adr/0006`.
+> (`anunnakicosmocrew.github.io`), published on the custom domain
+> `cosmocrew.dev`, so there is no sub-path — see `adr/0006` and `adr/0008`.
 
 ## Project structure
 

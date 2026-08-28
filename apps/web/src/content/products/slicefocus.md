@@ -10,7 +10,7 @@ icon: "./icons/slicefocus.png"
 links:
   website: "https://slicefocus.app"
   appStore: "https://apps.apple.com/app/id6761280632"
-  docs: "https://anunnakicosmocrew.github.io/slicefocus-docs/"
+  docs: "https://cosmocrew.dev/slicefocus-docs/"
 featured: true
 metricsEnabled: false
 order: 1

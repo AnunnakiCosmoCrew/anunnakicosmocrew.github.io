@@ -28,7 +28,13 @@ const year = new Date().getFullYear();
   </div>
 
   <div class="container footer-base">
-    <p>&copy; {year} CosmoCrew. All rights reserved.</p>
+    <p>
+      &copy; {year} CosmoCrew &mdash; a brand of <a
+        href="https://luvita.tr/"
+        rel="noopener noreferrer"
+        target="_blank">Luvita Teknoloji Ltd. &#350;ti.</a
+      >
+    </p>
   </div>
 </footer>
 
@@ -117,5 +123,15 @@ const year = new Date().getFullYear();
     margin-top: var(--sp-6);
     font-size: var(--fs-300);
     color: var(--c-muted);
+  }
+
+  .footer-base a {
+    color: var(--c-ink-soft);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .footer-base a:hover {
+    color: var(--c-ink);
   }
 </style>

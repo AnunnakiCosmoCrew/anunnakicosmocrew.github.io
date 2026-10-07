@@ -1,0 +1,107 @@
+{
+  "$comment": "Brand-and-claim rules for cosmocrew.dev (luvita-docs#9, EmirErs W7). Run after `npm run build:web`: python3 .github/scripts/brand-check.py. Schema: https://github.com/AnunnakiCosmoCrew/project-templates/tree/main/actions/brand-claim-check",
+  "root": ".",
+  "ignore": [
+    "apps/web/dist/_astro/**",
+    "apps/metrics/**",
+    "services/**",
+    "packages/**"
+  ],
+  "rules": [
+    {
+      "id": "attribution-line",
+      "kind": "required",
+      "pattern": "(©|&copy;) 20\\d{2} CosmoCrew (—|&mdash;) a brand of <a(?=[^>]*\\shref=\"https://luvita\\.tr/\")[^>]*>Luvita Teknoloji Ltd\\. (Ş|&#350;)ti\\.</a>",
+      "paths": [
+        "apps/web/dist/**/*.html"
+      ],
+      "why": "CLAUDE.md / luvita-docs ADR 0001: every page carries `© {year} CosmoCrew — a brand of Luvita Teknoloji Ltd. Şti.` in server-sent HTML, with the entity as the link text and https://luvita.tr/ as the target (rule inventory 57; the defect that cost case #00302760). Case-sensitive; the built HTML may carry © / — / Ş as entities, so both forms are accepted, and the anchor's real href must be luvita.tr.",
+      "flags": ""
+    },
+    {
+      "id": "holder-is-cosmocrew",
+      "kind": "banned",
+      "pattern": "(©|&copy;|&#169;)(?!\\s*(?:\\d{4}\\s*)?CosmoCrew)\\s*\\S*",
+      "paths": [
+        "apps/web/dist/**/*.html"
+      ],
+      "why": "ADR 0001: `© CosmoCrew` leads and is never replaced by `© Luvita`; the copyright holder is never a person."
+    },
+    {
+      "id": "no-attribution-via-cosmocrew",
+      "kind": "banned",
+      "pattern": "a brand of\\s*<a\\s[^>]*href=\"https?://(www\\.)?cosmocrew\\.dev",
+      "paths": [
+        "apps/web/dist/**/*.html"
+      ],
+      "why": "CLAUDE.md: never route the attribution through another site; one hop is not enough."
+    },
+    {
+      "id": "short-form-only",
+      "kind": "banned",
+      "pattern": "Enerji|ENERJİ",
+      "paths": [
+        "apps/web/dist/**/*.html"
+      ],
+      "why": "CLAUDE.md: short form of the company name only; the full trade name contains \"Enerji\" and belongs in legal-identity blocks on luvita.tr (luvita-web/adr/0003; rule inventory 56)."
+    },
+    {
+      "id": "no-non-cosmocrew-products",
+      "kind": "banned",
+      "pattern": "\\bUmay\\b|Luvi Engine|\\bPelerin\\b|umayconnect",
+      "paths": [
+        "apps/web/dist/**/*.html",
+        "apps/web/dist/**/*.xml"
+      ],
+      "why": "CLAUDE.md: do not list Luvita's non-CosmoCrew products (Umay, Luvi Engine, Pelerin) here; that is luvita.tr's job and Pelerin is in stealth (rule inventory 58)."
+    },
+    {
+      "id": "no-internal-product-names",
+      "kind": "banned",
+      "pattern": "WordPower|\\bYaren\\b",
+      "paths": [
+        "apps/web/dist/**/*.html",
+        "apps/web/dist/**/*.xml"
+      ],
+      "why": "LUVITA.md, Brands: LexiPower never \"WordPower\", Umay never \"Yaren\" in public (rule inventory 58)."
+    },
+    {
+      "id": "no-private-metrics",
+      "kind": "banned",
+      "pattern": "metricsEnabled|/api/metrics|metrics-api|\\bMAU\\b|\\bDAU\\b|\\bMRR\\b|\\bARR\\b|revenue|subscriber count|service_account|client_secret|api[_-]?key",
+      "paths": [
+        "apps/web/dist/**/*.html",
+        "apps/web/dist/**/*.js",
+        "apps/web/dist/**/*.json"
+      ],
+      "why": "adr/0002: the public site contains zero private metrics data and zero gating logic; metricsEnabled is never rendered."
+    },
+    {
+      "id": "no-metrics-app-in-public-build",
+      "kind": "file-banned",
+      "paths": [
+        "apps/web/dist/metrics/**"
+      ],
+      "why": "adr/0002 / adr/0003: the metrics dashboard is a separate, authenticated application on its own subdomain, never part of the GitHub Pages build."
+    },
+    {
+      "id": "no-street-address",
+      "kind": "banned",
+      "pattern": "yal[ıi]kent|\\b69\\s*/\\s*25\\b|g[üu]ndo[ğg]an\\s+mah",
+      "paths": [
+        "apps/web/dist/**/*.html"
+      ],
+      "why": "LUVITA.md, Legal entity: the registered office is the founder's home; the street address is never published on our own surfaces (rule inventory 54/118)."
+    },
+    {
+      "id": "voice-no-self-deprecation",
+      "kind": "banned",
+      "pattern": ">[^<]*\\b(small|indie|humble|modest)\\b",
+      "paths": [
+        "apps/web/dist/**/*.html"
+      ],
+      "severity": "warn",
+      "why": "LUVITA.md, Copy rules (CosmoCrew voice): feel indie and ambitious without saying it; avoid \"small\", \"indie\", \"humble\", \"modest\". Reported for review, since the words have innocent uses."
+    }
+  ]
+}

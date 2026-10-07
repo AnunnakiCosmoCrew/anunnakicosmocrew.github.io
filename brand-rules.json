@@ -11,7 +11,7 @@
     {
       "id": "attribution-line",
       "kind": "required",
-      "pattern": "(©|&copy;) 20\\d{2} CosmoCrew (—|&mdash;) a brand of <a\\s[^>]*\\shref=\"https://luvita\\.tr/\"[^>]*>Luvita Teknoloji Ltd\\. (Ş|&#350;)ti\\.</a>",
+      "pattern": "(©|&copy;) 20\\d{2} CosmoCrew (—|&mdash;) a brand of <a(?=[^>]*\\shref=\"https://luvita\\.tr/\")[^>]*>Luvita Teknoloji Ltd\\. (Ş|&#350;)ti\\.</a>",
       "paths": [
         "apps/web/dist/**/*.html"
       ],

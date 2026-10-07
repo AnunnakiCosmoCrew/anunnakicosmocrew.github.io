@@ -1,0 +1,41 @@
+name: CI
+
+# The gate for pull requests. deploy.yml builds only after a merge to main; this
+# runs the public site's check + build on the PR, then the brand-and-claim check
+# (luvita-docs#9) over apps/web/dist: the ADR 0001 attribution line verbatim on
+# every page, the holder never a person or a bare brand, short company name only,
+# no non-CosmoCrew products, no "WordPower"/"Yaren", no private metrics. Rules and
+# reasons live in brand-rules.json; the script is vendored from
+# project-templates/actions/brand-claim-check.
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Check (public site)
+        run: npm run check --workspace @cosmocrew/web
+      - name: Build (public site)
+        run: npm run build:web
+      - name: Brand and claim check
+        run: python3 .github/scripts/brand-check.py --rules brand-rules.json

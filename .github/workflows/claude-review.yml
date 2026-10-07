@@ -20,6 +20,13 @@ name: Claude PR review
 # Never set ANTHROPIC_API_KEY here: a static key takes precedence over the
 # OAuth token and would bill the API account.
 #
+# BACKFILL: new PRs are reviewed automatically (opened / ready_for_review /
+# reopened). To review an older PR on demand, for example one opened while
+# Copilot's quota was out, add the `claude-review` label to it. Only that label
+# triggers a run; any other label is ignored by the job-level `if:`. Create the
+# label once per repo:
+#   gh label create claude-review --color 5319e7 --repo <owner>/<repo>
+#
 # NOT A REQUIRED CHECK: this review is advisory. Do not add it to a ruleset;
 # an outage or a rate limit must never block a merge.
 #
@@ -31,7 +38,7 @@ name: Claude PR review
 
 on:
   pull_request:
-    types: [opened, ready_for_review, reopened]
+    types: [opened, ready_for_review, reopened, labeled]
   workflow_dispatch:
     inputs:
       pr:
@@ -50,7 +57,8 @@ jobs:
       (github.event_name == 'workflow_dispatch' ||
        (github.event.pull_request.draft == false &&
         github.event.pull_request.head.repo.full_name == github.repository &&
-        github.actor != 'dependabot[bot]'))
+        github.actor != 'dependabot[bot]' &&
+        (github.event.action != 'labeled' || github.event.label.name == 'claude-review')))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:

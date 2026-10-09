@@ -3,7 +3,8 @@
 //   node .github/scripts/link-check.mjs [--dist apps/web/dist] [--external]
 // Internal checks always run: internal hrefs/srcs resolve to files in dist, and every
 // page has a canonical URL, a description and a sitemap entry. --external also
-// requests every external http(s) link and expects 2xx/3xx.
+// requests every external http(s) link (a, link, img, script, source; 6 at a time, one retry
+// on 429/5xx) and expects 2xx/3xx. Non-http(s) schemes and redirect stubs are skipped.
 import { readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { join, resolve, relative, sep } from 'node:path';
 
@@ -61,11 +62,13 @@ for (const page of pages) {
   const url = new URL('/' + name.replace(/(^|\/)index\.html$/, '').replace(/\.html$/, ''), 'https://cosmocrew.dev');
   const pagePath = url.pathname.replace(/\/+$/, '') || '/';
 
+  // Redirect stubs carry no page metadata; skip them entirely.
+  if (/<meta\b[^>]*http-equiv\s*=\s*["']?refresh/i.test(html)) continue;
   const canonical = html.match(/<link\b[^>]*\brel=["']canonical["'][^>]*>/i);
   if (!canonical || !attr(canonical[0], 'href')) fail(name, 'missing canonical link');
   const desc = html.match(/<meta\b[^>]*\bname=["']description["'][^>]*>/i);
   if (!desc || !(attr(desc[0], 'content') ?? '').trim()) fail(name, 'missing meta description');
-  if (!html.includes('http-equiv="refresh"') && !sitemapPaths.has(pagePath)) fail(name, `not in sitemap (${pagePath})`);
+  if (!sitemapPaths.has(pagePath)) fail(name, `not in sitemap (${pagePath})`);
 
   for (const m of html.matchAll(/<(a|link|img|script|source)\b[^>]*>/gi)) {
     const tag = m[0];
@@ -78,8 +81,11 @@ for (const page of pages) {
       fail(name, `unparseable link ${ref}`);
       continue;
     }
-    if (/^https?:$/.test(u.protocol) && (u.host !== 'cosmocrew.dev' || isCrossRepo(u.pathname))) {
-      if (m[1].toLowerCase() === 'a') (externals.get(u.href.split('#')[0]) ?? externals.set(u.href.split('#')[0], new Set()).get(u.href.split('#')[0])).add(name);
+    if (!/^https?:$/.test(u.protocol)) continue;
+    if ((u.host !== 'cosmocrew.dev' || isCrossRepo(u.pathname))) {
+      const key = u.href.split('#')[0];
+      if (!externals.has(key)) externals.set(key, new Set());
+      externals.get(key).add(name);
       continue;
     }
     if (!resolveInternal(u.pathname)) fail(name, `broken internal link ${ref}`);
@@ -87,19 +93,39 @@ for (const page of pages) {
 }
 
 if (external) {
-  const check = async (href) => {
-    for (const method of ['HEAD', 'GET']) {
-      try {
-        const r = await fetch(href, { method, redirect: 'follow', signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'cosmocrew-link-check' } });
-        if (r.status < 400) return null;
-        if (method === 'GET') return `HTTP ${r.status}`;
-      } catch (e) {
-        if (method === 'GET') return String(e.cause?.code ?? e.message);
-      }
+  const once = async (href, method) => {
+    try {
+      const r = await fetch(href, { method, redirect: 'follow', signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'cosmocrew-link-check' } });
+      r.body?.cancel();
+      return r.status;
+    } catch (e) {
+      return String(e.cause?.code ?? e.message);
     }
   };
+  const check = async (href) => {
+    let last;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      for (const method of ['HEAD', 'GET']) {
+        last = await once(href, method);
+        if (typeof last === 'number' && last < 400) return null;
+      }
+      // Retry once, after a pause, only on rate limiting / server errors / network errors.
+      if (typeof last === 'number' && last < 500 && last !== 429) break;
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+    return typeof last === 'number' ? `HTTP ${last}` : last;
+  };
   const list = [...externals.keys()];
-  const results = await Promise.all(list.map(check));
+  const results = new Array(list.length);
+  let next = 0;
+  await Promise.all(
+    Array.from({ length: 6 }, async () => {
+      while (next < list.length) {
+        const i = next++;
+        results[i] = await check(list[i]);
+      }
+    }),
+  );
   list.forEach((h, i) => results[i] && fail([...externals.get(h)].join(', '), `external link ${h} -> ${results[i]}`));
 }
 

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProductCard from '../../components/ProductCard.astro';
+import { softwareApplicationsJsonLd } from '../../lib/jsonld';
 
 const products = (await getCollection('products')).sort(
   (a, b) => a.data.order - b.data.order
@@ -12,6 +13,7 @@ const products = (await getCollection('products')).sort(
   title="Products — CosmoCrew"
   description="The CosmoCrew lineup: SliceFocus for visual day planning, LexiPower for vocabulary practice and With Handlebars for the guitar fretboard — all live, each made with the same care."
   path="products"
+  jsonLd={softwareApplicationsJsonLd(products)}
 >
   <section class="container">
     <div class="section-head">

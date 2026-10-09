@@ -1,5 +1,6 @@
 ---
 import { absoluteUrl, withBase } from '../lib/url';
+import type { JsonLd } from '../lib/jsonld';
 
 interface Props {
   title: string;
@@ -8,9 +9,11 @@ interface Props {
   path?: string;
   /** Optional social image path in public/, relative (no leading slash). */
   ogImage?: string;
+  /** Optional structured data, rendered as JSON-LD. */
+  jsonLd?: JsonLd;
 }
 
-const { title, description, path = '', ogImage = 'og.png' } = Astro.props;
+const { title, description, path = '', ogImage = 'og.png', jsonLd } = Astro.props;
 const canonical = absoluteUrl(path);
 const image = absoluteUrl(ogImage);
 ---
@@ -42,3 +45,5 @@ const image = absoluteUrl(ogImage);
 <meta name="twitter:image" content={image} />
 
 <link rel="sitemap" href={withBase('sitemap-index.xml')} />
+
+{jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}

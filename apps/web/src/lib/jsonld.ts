@@ -25,24 +25,39 @@ export function organizationJsonLd(): JsonLd {
   };
 }
 
+/** Display category -> Google/schema.org application category. */
+const APPLICATION_CATEGORY: Record<string, string> = {
+  Education: 'EducationalApplication',
+  Music: 'MusicApplication',
+  Productivity: 'BusinessApplication',
+};
+
 export function softwareApplicationsJsonLd(
   products: CollectionEntry<'products'>[]
 ): JsonLd {
+  const items = products.flatMap(({ data }) => {
+    const url = data.links.website ?? data.links.appStore;
+    if (!url) return [];
+    const isWeb = data.platform === 'Web';
+    return [
+      {
+        '@type': isWeb ? 'WebApplication' : 'SoftwareApplication',
+        name: data.name,
+        description: data.description,
+        applicationCategory: APPLICATION_CATEGORY[data.category],
+        ...(isWeb ? {} : { operatingSystem: data.platform }),
+        url,
+        publisher: { '@type': 'Organization', name: 'CosmoCrew', url: absoluteUrl() },
+      },
+    ];
+  });
   return {
     '@context': CONTEXT,
     '@type': 'ItemList',
-    itemListElement: products.map(({ data }, i) => ({
+    itemListElement: items.map((item, i) => ({
       '@type': 'ListItem',
       position: i + 1,
-      item: {
-        '@type': 'SoftwareApplication',
-        name: data.name,
-        description: data.description,
-        applicationCategory: data.category,
-        operatingSystem: data.platform,
-        url: data.links.website ?? data.links.appStore,
-        publisher: { '@type': 'Organization', name: 'CosmoCrew', url: absoluteUrl() },
-      },
+      item,
     })),
   };
 }

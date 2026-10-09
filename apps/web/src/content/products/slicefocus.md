@@ -5,7 +5,7 @@ tagline: "Visual day planning and focus sessions built around a 24-hour radial t
 description: "A productivity app for planning your day in time blocks and running focus sessions, organised around a radial 24-hour clock."
 status: Live
 category: Productivity
-platform: iOS
+platform: macOS, iOS and iPadOS
 icon: "./icons/slicefocus.png"
 links:
   website: "https://slicefocus.app"

@@ -47,7 +47,14 @@ Run from the repo root (scripts fan out to the workspaces):
 | `npm run build:metrics` | Build the dashboard to `apps/metrics/dist/`                       |
 | `npm run build`         | Build every workspace                                             |
 | `npm run check`         | Type-check every workspace (`astro check` / `tsc`)               |
+| `npm run check:links`   | After `build:web`: internal links, canonical, description, sitemap |
+| `npm run check:links:external` | Same, plus every external link must return 2xx/3xx (needs network) |
 | `npm run deploy:api`    | Deploy the metrics API Worker (`wrangler deploy`)                 |
+
+> `check:links` runs on every PR (internal checks only); the weekly
+> `Link check` workflow (`.github/workflows/link-check.yml`, also runnable by
+> hand) adds the external ones. The script is dependency-free and also runs on
+> Node 22, but the repo pins Node 24 (`.nvmrc`, `engines`), which CI uses.
 
 > Both apps are served from the root (`/`): the repo is the org Pages site
 > (`anunnakicosmocrew.github.io`), published on the custom domain

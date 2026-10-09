@@ -1,0 +1,31 @@
+name: Link check
+
+# Weekly external link check over the built public site (product links include
+# cross-repo Pages paths that can break unnoticed). The PR job in ci.yml runs the
+# internal checks only. See .github/scripts/link-check.mjs.
+
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build (public site)
+        run: npm run build:web
+      - name: Link and metadata check (internal and external)
+        run: npm run check:links:external

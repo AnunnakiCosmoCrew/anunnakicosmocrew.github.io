@@ -37,5 +37,7 @@ jobs:
         run: npm run check --workspace @cosmocrew/web
       - name: Build (public site)
         run: npm run build:web
+      - name: Link and metadata check (internal)
+        run: npm run check:links
       - name: Brand and claim check
         run: python3 .github/scripts/brand-check.py --rules brand-rules.json

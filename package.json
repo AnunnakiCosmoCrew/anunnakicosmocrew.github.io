@@ -21,6 +21,8 @@
     "build:web": "npm run build --workspace @cosmocrew/web",
     "build:metrics": "npm run build --workspace @cosmocrew/metrics",
     "deploy:api": "npm run deploy --workspace @cosmocrew/metrics-api",
-    "check": "npm run check --workspaces --if-present"
+    "check": "npm run check --workspaces --if-present",
+    "check:links": "node .github/scripts/link-check.mjs",
+    "check:links:external": "node .github/scripts/link-check.mjs --external"
   }
 }

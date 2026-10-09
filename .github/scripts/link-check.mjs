@@ -39,7 +39,12 @@ if (!sitemapPaths.size) errors.push('sitemap: no entries found in dist/sitemap-*
 const attr = (tag, name) => tag.match(new RegExp(`\\s${name}\\s*=\\s*("([^"]*)"|'([^']*)')`, 'i'))?.[2] ?? tag.match(new RegExp(`\\s${name}\\s*=\\s*'([^']*)'`, 'i'))?.[1];
 
 function resolveInternal(pathname) {
-  const p = decodeURIComponent(pathname).replace(/^\/+/, '');
+  let p;
+  try {
+    p = decodeURIComponent(pathname).replace(/^\/+/, '');
+  } catch {
+    return false;
+  }
   return [p, p + '.html', join(p, 'index.html')].map((c) => join(dist, c)).some((c) => existsSync(c) && statSync(c).isFile());
 }
 

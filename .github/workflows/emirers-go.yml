@@ -1,15 +1,19 @@
 # EmirErs /go (EM-53). Canonical copy: AnunnakiCosmoCrew/emirers routines/emirers-go.yml,
 # installed per repo by emirers scripts/go-workflow.py. Edit it there, not here.
 #
-# The founder comments `/go`, alone or followed by text (an answer, say), on an issue an
-# EmirErs agent works on (assigned to luvita-agents) while the agent waits: the issue is labelled
-# `needs-decision` or `stuck`. This fires the repo's claude.ai routine at once with `issue` /
-# `branch` / `mode: continue`, instead of waiting for `emirer watch`. A `/go` within 45 minutes of
-# one that fired (got 🚀) only gets 👀: that agent may still be running (it removes `needs-decision`
-# as soon as it reads the answer, which also stops later fires). A `/go` that failed (😕) or was
-# skipped never blocks a retry.
-# Every other comment skips the job, which costs no runner minutes. The comment text never
-# reaches a shell command or the routine payload: the agent reads the thread itself.
+# The founder comments `/go`, alone or followed by text (an answer, an instruction), on an open
+# issue. This fires the repo's claude.ai routine at once and always answers on the comment:
+#   - one of the issue's agent branches has an open PR: `mode: continue` on it;
+#   - the agent is waiting (`needs-decision` or `stuck`): `mode: continue` on its newest live
+#     branch (no merged or closed PR), or a fresh one if it never pushed;
+#   - anything else (reopened after a merge, never dispatched): new work on a fresh branch
+#     `feature/<issue>-go-<time>`, refused while an open native blocker holds it back;
+#     the issue is assigned to luvita-agents once the agent runs.
+# 🚀 fired (plus one comment with the session link and a marker `emirer watch` adopts the run
+# by), 😕 refused or failed (an open native blocker, the secret, the API; see the run), 👀 a /go
+# that fired in the last 45 minutes may still be running. A /go on a closed issue or a PR gets 😕
+# and one line saying why. Any other comment skips both jobs: no runner minutes. The comment
+# text never reaches a shell command or the routine payload: the agent reads the thread itself.
 name: EmirErs go
 
 on:
@@ -19,6 +23,7 @@ on:
 permissions:
   contents: read
   issues: write
+  pull-requests: read
 
 jobs:
   fire:
@@ -26,9 +31,6 @@ jobs:
       github.event.comment.user.login == 'mertyertugrul' &&
       !github.event.issue.pull_request &&
       github.event.issue.state == 'open' &&
-      contains(github.event.issue.assignees.*.login, 'luvita-agents') &&
-      (contains(github.event.issue.labels.*.name, 'needs-decision') ||
-       contains(github.event.issue.labels.*.name, 'stuck')) &&
       startsWith(github.event.comment.body, '/go')
     runs-on: ubuntu-latest
     timeout-minutes: 3
@@ -38,18 +40,22 @@ jobs:
       group: emirers-go-${{ github.event.issue.number }}
       cancel-in-progress: false
     steps:
-      - name: Fire the routine in continue mode
+      - name: Fire the routine
         env:
           GH_TOKEN: ${{ github.token }}
           FIRE_TOKEN: ${{ secrets.EMIRERS_FIRE_TOKEN }}
           ROUTINE: "trig_018thffEiQhwkfQyLNmYnjHP"
+          BRANCH_PREFIX: "feature/"
           REPO: ${{ github.repository }}
           ISSUE: ${{ github.event.issue.number }}
           COMMENT_ID: ${{ github.event.comment.id }}
           BODY: ${{ github.event.comment.body }}
+          LABELS: ${{ join(github.event.issue.labels.*.name, ' ') }}
+          ASSIGNEES: ${{ join(github.event.issue.assignees.*.login, ' ') }}
         run: |
           set -Eeuo pipefail
           react() { gh api -X POST "repos/$REPO/issues/comments/$COMMENT_ID/reactions" -f content="$1" >/dev/null || true; }
+          say() { gh api "repos/$REPO/issues/$ISSUE/comments" -f body="$1" >/dev/null || true; }
           # Any unexpected failure (an API call, a pipe) still leaves 😕 on the comment, not just a red run.
           trap 'react confused' ERR
 
@@ -80,23 +86,66 @@ jobs:
             exit 0
           fi
 
-          # The agent's branch: <prefix>/(<key>-)<issue>-<slug>, as emirer names it. The agent pushes
-          # it before asking a question, so it exists even without commits. When an earlier attempt
-          # left another one, take the branch with the newest commit.
-          # The key starts with a letter, so issue 3 never matches another issue's `x/12-3-foo`.
+          # The agent's branches: <prefix>/(<key>-)<issue>-<slug>, as emirer names them. The key starts
+          # with a letter, so issue 3 never matches another issue's `x/12-3-foo`.
           re="^[a-z0-9][a-z0-9._-]*/([a-z][a-z0-9]*-)?${ISSUE}-[a-z0-9-]+$"
           all=$(gh api --paginate "repos/$REPO/branches?per_page=100" --jq '.[].name')
           branches=$(printf '%s\n' "$all" | grep -E "$re" || true)
-          if [ -z "$branches" ]; then
-            echo "::error::no agent branch for #$ISSUE on origin"
-            react confused
-            exit 1
-          fi
-          branch=$(for b in $branches; do
-                     printf '%s %s\n' "$(gh api "repos/$REPO/commits/$b" --jq '.commit.committer.date' || echo 0000)" "$b"
-                   done | sort -r | sed -n 1p | cut -d' ' -f2)
 
-          text=$(printf 'issue: %s\nbranch: %s\nmode: continue' "$ISSUE" "$branch")
+          # An open PR from any of them wins: the agent continues there, waiting or not.
+          open_line=$(gh api --paginate "repos/$REPO/pulls?state=open&per_page=100" \
+            | jq -rs --arg re "$re" '[add // [] | .[] | select(.head.ref | test($re)) | "\(.head.ref) \(.number)"] | first // empty')
+          open_branch=${open_line%% *}
+          open_pr=${open_line##* }
+
+          # Otherwise a waiting agent continues on its newest live branch: one with no merged or closed
+          # PR, so a stale branch left behind by an earlier merge is never resumed.
+          live=""
+          if [ -z "$open_branch" ] && [ -n "$branches" ]; then
+            by_age=$(for b in $branches; do
+                       printf '%s %s\n' "$(gh api "repos/$REPO/commits/$b" --jq '.commit.committer.date' || echo 0000)" "$b"
+                     done | sort -r | cut -d' ' -f2)
+            for cand in $by_age; do
+              done_pr=$(gh api "repos/$REPO/pulls?head=${REPO%%/*}:$cand&state=closed&per_page=1" --jq '.[0].number // empty')
+              if [ -z "$done_pr" ]; then live=$cand; break; fi
+            done
+          fi
+
+          waiting=""
+          case " $LABELS " in *" needs-decision "*|*" stuck "*) waiting=1 ;; esac
+          fresh="${BRANCH_PREFIX}${ISSUE}-go-$(date -u +%m%d%H%M)"
+          if [ -n "$open_branch" ]; then
+            mode="continue"; branch=$open_branch; what="continuing on PR #$open_pr"
+          elif [ -n "$waiting" ]; then
+            mode="continue"; branch=${live:-$fresh}; what="continuing where the agent stopped"
+          else
+            mode="task"; branch=$fresh; what="new work on a fresh branch"
+          fi
+
+          # New work never starts while an open native blocker holds it back. Fails closed: if the
+          # blockers cannot be read, nothing fires. A continue run is work already under way, so a
+          # blocker added later never keeps the founder's answer from reaching the agent.
+          if [ "$mode" = "task" ]; then
+            if ! blockers=$(gh api "repos/$REPO/issues/$ISSUE/dependencies/blocked_by" \
+                   --jq '[.[] | select(.state == "open") | "#\(.number)"] | join(" ")'); then
+              echo "::error::could not read #$ISSUE's blockers"
+              react confused
+              say "😕 \`/go\` did not start an agent: GitHub did not answer which issues block this one. Try \`/go\` again in a minute."
+              exit 1
+            fi
+            if [ -n "$blockers" ]; then
+              echo "::error::#$ISSUE is blocked by $blockers"
+              react confused
+              say "😕 \`/go\` did not start an agent: this issue is blocked by $blockers. Close the blocker first, or remove the Blocked-by link."
+              exit 1
+            fi
+          fi
+
+          if [ "$mode" = "continue" ]; then
+            text=$(printf 'issue: %s\nbranch: %s\nmode: continue' "$ISSUE" "$branch")
+          else
+            text=$(printf 'issue: %s\nbranch: %s' "$ISSUE" "$branch")
+          fi
           code=$(curl -sS -o resp.json -w '%{http_code}' --max-time 30 -X POST \
             "https://api.anthropic.com/v1/claude_code/routines/$ROUTINE/fire" \
             -H "Authorization: Bearer $FIRE_TOKEN" \
@@ -109,9 +158,54 @@ jobs:
             *)
               echo "::error::routine fire returned HTTP $code"
               react confused
+              say "😕 \`/go\` could not start the agent: the routine answered HTTP $code. The Actions run has the details; \`/go\` again to retry."
               exit 1
               ;;
           esac
-          url=$(jq -r '.claude_code_session_url // empty' resp.json)
-          echo "Fired routine for #$ISSUE on $branch: ${url:-no session url}" | tee -a "$GITHUB_STEP_SUMMARY"
+          # The agent is running from here on: 🚀 first, and nothing below may fail the step, or a retry
+          # /go would start a twin (the 45-min guard keys on 🚀) and watch would never adopt this run.
+          trap - ERR
           react rocket
+          # Assigned only once an agent really runs, so a failed fire never leaves an agent-owned issue
+          # with nothing behind it. Best-effort: the agent and watch's adoption do not depend on it.
+          case " $ASSIGNEES " in
+            *" luvita-agents "*) ;;
+            *) gh api "repos/$REPO/issues/$ISSUE/assignees" -f 'assignees[]=luvita-agents' >/dev/null 2>&1 || true ;;
+          esac
+          session=$(jq -r '.claude_code_session_id // empty' resp.json 2>/dev/null | tr -cd 'A-Za-z0-9_-' || true)
+          url=$(jq -r '.claude_code_session_url // empty' resp.json 2>/dev/null || true)
+          echo "Fired routine for #$ISSUE ($mode) on $branch: ${url:-no session url}" | tee -a "$GITHUB_STEP_SUMMARY" || true
+          # The marker is what `emirer watch` adopts this run by (follow-ups, stuck, ready-to-merge).
+          say "<!-- emirers-go-run branch=$branch mode=$mode session=$session -->
+          🚀 \`/go\` started an agent, $what on \`$branch\`: ${url:-session link unavailable}"
+
+  explain:
+    # The founder's /go where it cannot act: say so instead of staying silent.
+    if: >-
+      github.event.comment.user.login == 'mertyertugrul' &&
+      startsWith(github.event.comment.body, '/go') &&
+      (github.event.issue.pull_request || github.event.issue.state != 'open')
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Say why /go did nothing
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          BODY: ${{ github.event.comment.body }}
+          IS_PR: ${{ github.event.issue.pull_request && 'yes' || '' }}
+        run: |
+          set -euo pipefail
+          first=$(printf '%s\n' "$BODY" | sed -n 1p | tr -d '\r')
+          if ! [[ "$first" =~ ^/go([[:space:]]|$) ]]; then
+            exit 0
+          fi
+          if [ -n "$IS_PR" ]; then
+            why="\`/go\` works on issues, not PRs: comment \`/go\` on the issue this PR closes."
+          else
+            why="\`/go\` works on open issues: reopen this one first, then \`/go\` again."
+          fi
+          gh api -X POST "repos/$REPO/issues/comments/$COMMENT_ID/reactions" -f content=confused >/dev/null || true
+          gh api "repos/$REPO/issues/$ISSUE/comments" -f body="😕 $why" >/dev/null

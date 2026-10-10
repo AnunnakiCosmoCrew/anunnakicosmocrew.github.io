@@ -48,10 +48,13 @@ jobs:
           COMMENT_ID: ${{ github.event.comment.id }}
           BODY: ${{ github.event.comment.body }}
         run: |
-          set -euo pipefail
+          set -Eeuo pipefail
           react() { gh api -X POST "repos/$REPO/issues/comments/$COMMENT_ID/reactions" -f content="$1" >/dev/null || true; }
+          # Any unexpected failure (an API call, a pipe) still leaves 😕 on the comment, not just a red run.
+          trap 'react confused' ERR
 
-          first=$(printf '%s\n' "$BODY" | head -n1 | tr -d '\r')
+          # sed, not head: head exits early and the writer's SIGPIPE would trip pipefail and the trap.
+          first=$(printf '%s\n' "$BODY" | sed -n 1p | tr -d '\r')
           if ! [[ "$first" =~ ^/go([[:space:]]|$) ]]; then
             echo "first line is not /go; nothing to do"
             exit 0
@@ -67,10 +70,10 @@ jobs:
           since=$(date -u -d '45 minutes ago' +%Y-%m-%dT%H:%M:%SZ)
           earlier=$(gh api --paginate "repos/$REPO/issues/$ISSUE/comments?since=$since&per_page=100" \
             | jq -rs --arg since "$since" --argjson me "$COMMENT_ID" '
-                add // [] | .[]
-                | select(.user.login == "mertyertugrul" and .id != $me and .created_at >= $since)
-                | select((.reactions.rocket // 0) > 0)
-                | select(.body | test("^\\s*/go(\\s|$)")) | .id' | head -n1)
+                [add // [] | .[]
+                 | select(.user.login == "mertyertugrul" and .id < $me and .created_at >= $since)
+                 | select((.reactions.rocket // 0) > 0)
+                 | select(.body | split("\n")[0] | test("^/go([ \\t\\r]|$)")) | .id] | first // empty')
           if [ -n "$earlier" ]; then
             echo "an earlier /go (comment $earlier) fired an agent less than 45 minutes ago; not firing again"
             react eyes
@@ -82,15 +85,16 @@ jobs:
           # left another one, take the branch with the newest commit.
           # The key starts with a letter, so issue 3 never matches another issue's `x/12-3-foo`.
           re="^[a-z0-9][a-z0-9._-]*/([a-z][a-z0-9]*-)?${ISSUE}-[a-z0-9-]+$"
-          branches=$(gh api --paginate "repos/$REPO/branches?per_page=100" --jq '.[].name' | grep -E "$re" || true)
+          all=$(gh api --paginate "repos/$REPO/branches?per_page=100" --jq '.[].name')
+          branches=$(printf '%s\n' "$all" | grep -E "$re" || true)
           if [ -z "$branches" ]; then
             echo "::error::no agent branch for #$ISSUE on origin"
             react confused
             exit 1
           fi
           branch=$(for b in $branches; do
-                     printf '%s %s\n' "$(gh api "repos/$REPO/commits/$b" --jq '.commit.committer.date')" "$b"
-                   done | sort -r | head -n1 | cut -d' ' -f2)
+                     printf '%s %s\n' "$(gh api "repos/$REPO/commits/$b" --jq '.commit.committer.date' || echo 0000)" "$b"
+                   done | sort -r | sed -n 1p | cut -d' ' -f2)
 
           text=$(printf 'issue: %s\nbranch: %s\nmode: continue' "$ISSUE" "$branch")
           code=$(curl -sS -o resp.json -w '%{http_code}' --max-time 30 -X POST \

@@ -4,9 +4,10 @@
 # The founder comments `/go`, alone or followed by text (an answer, say), on an issue an
 # EmirErs agent works on (assigned to luvita-agents) while the agent waits: the issue is labelled
 # `needs-decision` or `stuck`. This fires the repo's claude.ai routine at once with `issue` /
-# `branch` / `mode: continue`, instead of waiting for `emirer watch`. A second `/go` within 45
-# minutes only gets 👀: the agent fired by the first may still be running (it removes
-# `needs-decision` as soon as it reads the answer, which also stops later fires).
+# `branch` / `mode: continue`, instead of waiting for `emirer watch`. A `/go` within 45 minutes of
+# one that fired (got 🚀) only gets 👀: that agent may still be running (it removes `needs-decision`
+# as soon as it reads the answer, which also stops later fires). A `/go` that failed (😕) or was
+# skipped never blocks a retry.
 # Every other comment skips the job, which costs no runner minutes. The comment text never
 # reaches a shell command or the routine payload: the agent reads the thread itself.
 name: EmirErs go
@@ -18,10 +19,6 @@ on:
 permissions:
   contents: read
   issues: write
-
-concurrency:
-  group: emirers-go-${{ github.event.issue.number }}
-  cancel-in-progress: false
 
 jobs:
   fire:
@@ -35,6 +32,11 @@ jobs:
       startsWith(github.event.comment.body, '/go')
     runs-on: ubuntu-latest
     timeout-minutes: 3
+    # Job level, so it is evaluated after `if`: a skipped run (any other comment) never joins the
+    # group and so never replaces a queued `/go`.
+    concurrency:
+      group: emirers-go-${{ github.event.issue.number }}
+      cancel-in-progress: false
     steps:
       - name: Fire the routine in continue mode
         env:
@@ -60,13 +62,14 @@ jobs:
             exit 1
           fi
 
-          # A /go in the last 45 minutes already fired an agent that may still be running (the same
-          # gap emirer watch keeps between fires); this comment is the newest, so skip it.
+          # A /go in the last 45 minutes that fired an agent (it carries the 🚀 this job adds on
+          # success) may still be running: the same gap emirer watch keeps between fires.
           since=$(date -u -d '45 minutes ago' +%Y-%m-%dT%H:%M:%SZ)
           earlier=$(gh api --paginate "repos/$REPO/issues/$ISSUE/comments?since=$since&per_page=100" \
             | jq -rs --arg since "$since" --argjson me "$COMMENT_ID" '
                 add // [] | .[]
                 | select(.user.login == "mertyertugrul" and .id != $me and .created_at >= $since)
+                | select((.reactions.rocket // 0) > 0)
                 | select(.body | test("^\\s*/go(\\s|$)")) | .id' | head -n1)
           if [ -n "$earlier" ]; then
             echo "an earlier /go (comment $earlier) fired an agent less than 45 minutes ago; not firing again"
@@ -77,7 +80,8 @@ jobs:
           # The agent's branch: <prefix>/(<key>-)<issue>-<slug>, as emirer names it. The agent pushes
           # it before asking a question, so it exists even without commits. When an earlier attempt
           # left another one, take the branch with the newest commit.
-          re="^[a-z0-9][a-z0-9._-]*/([a-z0-9]+-)?${ISSUE}-[a-z0-9-]+$"
+          # The key starts with a letter, so issue 3 never matches another issue's `x/12-3-foo`.
+          re="^[a-z0-9][a-z0-9._-]*/([a-z][a-z0-9]*-)?${ISSUE}-[a-z0-9-]+$"
           branches=$(gh api --paginate "repos/$REPO/branches?per_page=100" --jq '.[].name' | grep -E "$re" || true)
           if [ -z "$branches" ]; then
             echo "::error::no agent branch for #$ISSUE on origin"

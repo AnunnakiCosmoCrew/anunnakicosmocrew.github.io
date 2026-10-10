@@ -21,14 +21,16 @@ permissions:
 
 jobs:
   go:
-    # `/go` alone, or followed by a space or a line break: `/gone` or `/goal` never start a runner
-    # or reach the fire token. fromJSON('"\n"') is how an expression spells a newline.
+    # `/go` alone, or followed by a space, a tab or a line break (what the shared workflow's
+    # `^/go([[:space:]]|$)` accepts): `/gone` or `/goal` never start a runner or reach the fire
+    # token. fromJSON('"\n"') is how an expression spells a newline.
     if: >-
       github.event.comment.user.login == 'mertyertugrul' &&
       (github.event.comment.body == '/go' ||
        startsWith(github.event.comment.body, '/go ') ||
        startsWith(github.event.comment.body, format('/go{0}', fromJSON('"\n"'))) ||
-       startsWith(github.event.comment.body, format('/go{0}', fromJSON('"\r"'))))
+       startsWith(github.event.comment.body, format('/go{0}', fromJSON('"\r"'))) ||
+       startsWith(github.event.comment.body, format('/go{0}', fromJSON('"\t"'))))
     # Job level, so it is evaluated after `if`: a skipped run (any other comment) never joins the
     # group and so never replaces a queued `/go`.
     concurrency:

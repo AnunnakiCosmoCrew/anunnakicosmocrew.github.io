@@ -1,0 +1,109 @@
+# EmirErs /go (EM-53). Canonical copy: AnunnakiCosmoCrew/emirers routines/emirers-go.yml,
+# installed per repo by emirers scripts/go-workflow.py. Edit it there, not here.
+#
+# The founder comments `/go`, alone or followed by text (an answer, say), on an issue an
+# EmirErs agent works on (assigned to luvita-agents) while the agent waits: the issue is labelled
+# `needs-decision` or `stuck`. This fires the repo's claude.ai routine at once with `issue` /
+# `branch` / `mode: continue`, instead of waiting for `emirer watch`. A second `/go` within 45
+# minutes only gets 👀: the agent fired by the first may still be running (it removes
+# `needs-decision` as soon as it reads the answer, which also stops later fires).
+# Every other comment skips the job, which costs no runner minutes. The comment text never
+# reaches a shell command or the routine payload: the agent reads the thread itself.
+name: EmirErs go
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: emirers-go-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  fire:
+    if: >-
+      github.event.comment.user.login == 'mertyertugrul' &&
+      !github.event.issue.pull_request &&
+      github.event.issue.state == 'open' &&
+      contains(github.event.issue.assignees.*.login, 'luvita-agents') &&
+      (contains(github.event.issue.labels.*.name, 'needs-decision') ||
+       contains(github.event.issue.labels.*.name, 'stuck')) &&
+      startsWith(github.event.comment.body, '/go')
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Fire the routine in continue mode
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FIRE_TOKEN: ${{ secrets.EMIRERS_FIRE_TOKEN }}
+          ROUTINE: "trig_018thffEiQhwkfQyLNmYnjHP"
+          REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+          COMMENT_ID: ${{ github.event.comment.id }}
+          BODY: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+          react() { gh api -X POST "repos/$REPO/issues/comments/$COMMENT_ID/reactions" -f content="$1" >/dev/null || true; }
+
+          first=$(printf '%s\n' "$BODY" | head -n1 | tr -d '\r')
+          if ! [[ "$first" =~ ^/go([[:space:]]|$) ]]; then
+            echo "first line is not /go; nothing to do"
+            exit 0
+          fi
+          if [ -z "$FIRE_TOKEN" ]; then
+            echo "::error::repo secret EMIRERS_FIRE_TOKEN is missing (emirers scripts/go-workflow.py secret <repo>)"
+            react confused
+            exit 1
+          fi
+
+          # A /go in the last 45 minutes already fired an agent that may still be running (the same
+          # gap emirer watch keeps between fires); this comment is the newest, so skip it.
+          since=$(date -u -d '45 minutes ago' +%Y-%m-%dT%H:%M:%SZ)
+          earlier=$(gh api --paginate "repos/$REPO/issues/$ISSUE/comments?since=$since&per_page=100" \
+            | jq -rs --arg since "$since" --argjson me "$COMMENT_ID" '
+                add // [] | .[]
+                | select(.user.login == "mertyertugrul" and .id != $me and .created_at >= $since)
+                | select(.body | test("^\\s*/go(\\s|$)")) | .id' | head -n1)
+          if [ -n "$earlier" ]; then
+            echo "an earlier /go (comment $earlier) fired an agent less than 45 minutes ago; not firing again"
+            react eyes
+            exit 0
+          fi
+
+          # The agent's branch: <prefix>/(<key>-)<issue>-<slug>, as emirer names it. The agent pushes
+          # it before asking a question, so it exists even without commits. When an earlier attempt
+          # left another one, take the branch with the newest commit.
+          re="^[a-z0-9][a-z0-9._-]*/([a-z0-9]+-)?${ISSUE}-[a-z0-9-]+$"
+          branches=$(gh api --paginate "repos/$REPO/branches?per_page=100" --jq '.[].name' | grep -E "$re" || true)
+          if [ -z "$branches" ]; then
+            echo "::error::no agent branch for #$ISSUE on origin"
+            react confused
+            exit 1
+          fi
+          branch=$(for b in $branches; do
+                     printf '%s %s\n' "$(gh api "repos/$REPO/commits/$b" --jq '.commit.committer.date')" "$b"
+                   done | sort -r | head -n1 | cut -d' ' -f2)
+
+          text=$(printf 'issue: %s\nbranch: %s\nmode: continue' "$ISSUE" "$branch")
+          code=$(curl -sS -o resp.json -w '%{http_code}' --max-time 30 -X POST \
+            "https://api.anthropic.com/v1/claude_code/routines/$ROUTINE/fire" \
+            -H "Authorization: Bearer $FIRE_TOKEN" \
+            -H "anthropic-beta: experimental-cc-routine-2026-04-01" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "Content-Type: application/json" \
+            --data "$(jq -n --arg t "$text" '{text: $t}')") || code=000
+          case "$code" in
+            2??) ;;
+            *)
+              echo "::error::routine fire returned HTTP $code"
+              react confused
+              exit 1
+              ;;
+          esac
+          url=$(jq -r '.claude_code_session_url // empty' resp.json)
+          echo "Fired routine for #$ISSUE on $branch: ${url:-no session url}" | tee -a "$GITHUB_STEP_SUMMARY"
+          react rocket

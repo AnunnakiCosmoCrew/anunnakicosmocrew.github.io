@@ -39,6 +39,8 @@ jobs:
     uses: AnunnakiCosmoCrew/project-templates/.github/workflows/emirers-go.yml@main
     with:
       routine_id: "trig_018thffEiQhwkfQyLNmYnjHP"
+      routine_opus_id: "trig_013VK53urCZXmPBMUb9oSEZA"
       branch_prefix: "feature/"
     secrets:
       fire_token: ${{ secrets.EMIRERS_FIRE_TOKEN }}
+      fire_token_opus: ${{ secrets.EMIRERS_FIRE_TOKEN_OPUS }}

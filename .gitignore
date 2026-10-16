@@ -23,5 +23,7 @@ Thumbs.db
 .vscode/
 .idea/
 
-# local tooling (Claude Code, etc.)
-.claude/
+# local tooling (Claude Code, etc.); the cloud setup hook is shared (emirers#79)
+.claude/*
+!.claude/settings.json
+!.claude/hooks/

@@ -2,7 +2,7 @@
 name: With Handlebars
 slug: with-handlebars
 tagline: "Master scales and chords on the guitar — every tone, the whole neck, any tuning."
-description: "A guitar fretboard explorer that shows every chord and scale tone across the whole neck, with strict enharmonic spelling, theory that shows its work, a practice room, and sampled sound — on the web and as an app for iPhone and iPad."
+description: "A guitar fretboard explorer for every chord and scale tone across the whole neck, with a practice room and sampled sound — on the web, iPhone and iPad."
 status: Live
 category: Music
 platform: Web, iOS and iPadOS

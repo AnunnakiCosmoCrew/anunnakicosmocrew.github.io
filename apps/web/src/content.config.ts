@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { PLATFORMS, isKnownPlatformList } from './lib/platforms';
 
 /**
  * Products shown on the public site. Single source of truth — the Home and
@@ -20,7 +21,9 @@ const products = defineCollection({
       description: z.string(),
       status: z.enum(['Live', 'Beta', 'Archived']).default('Live'),
       category: z.string(),
-      platform: z.string(),
+      platform: z.string().refine(isKnownPlatformList, {
+        message: `platform must be ${PLATFORMS.join(' / ')} joined by ", " or " and "`,
+      }),
       icon: image(),
       links: z
         .object({

@@ -4,6 +4,7 @@
  */
 import type { CollectionEntry } from 'astro:content';
 import { absoluteUrl } from './url';
+import { splitPlatforms } from './platforms';
 
 const CONTEXT = 'https://schema.org';
 
@@ -38,14 +39,20 @@ export function softwareApplicationsJsonLd(
   const items = products.flatMap(({ data }) => {
     const url = data.links.website ?? data.links.appStore;
     if (!url) return [];
-    const isWeb = data.platform === 'Web';
+    const platforms = splitPlatforms(data.platform);
+    // A product on the web stays a WebApplication even when it also ships
+    // native apps; the web itself is never an operatingSystem.
+    const isWeb = platforms.includes('Web');
+    const operatingSystems = platforms.filter((p) => p !== 'Web');
     return [
       {
         '@type': isWeb ? 'WebApplication' : 'SoftwareApplication',
         name: data.name,
         description: data.description,
         applicationCategory: APPLICATION_CATEGORY[data.category],
-        ...(isWeb ? {} : { operatingSystem: data.platform }),
+        ...(operatingSystems.length
+          ? { operatingSystem: operatingSystems.join(', ') }
+          : {}),
         url,
         publisher: { '@type': 'Organization', name: 'CosmoCrew', url: absoluteUrl() },
       },

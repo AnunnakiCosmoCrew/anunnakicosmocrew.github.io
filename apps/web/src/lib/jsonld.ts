@@ -39,13 +39,15 @@ export function softwareApplicationsJsonLd(
     const url = data.links.website ?? data.links.appStore;
     if (!url) return [];
     const isWeb = data.platform === 'Web';
+    // "Web, iOS and iPadOS" -> "iOS and iPadOS": the web is not an operating system.
+    const operatingSystem = data.platform.replace(/^Web,\s*/, '');
     return [
       {
         '@type': isWeb ? 'WebApplication' : 'SoftwareApplication',
         name: data.name,
         description: data.description,
         applicationCategory: APPLICATION_CATEGORY[data.category],
-        ...(isWeb ? {} : { operatingSystem: data.platform }),
+        ...(isWeb ? {} : { operatingSystem }),
         url,
         publisher: { '@type': 'Organization', name: 'CosmoCrew', url: absoluteUrl() },
       },

@@ -36,3 +36,51 @@ copyright holder for everything here.
   with `rel="noopener noreferrer" target="_blank"`.
 - **No private data or authentication in the public site** (`adr/0002`). The
   metrics dashboard is separately gated (`adr/0003`, `adr/0005`).
+
+## Design brief
+
+For any visible UI change, use the `frontend-design` skill
+(`.claude/skills/frontend-design/`) within these constraints. The tokens live in
+`packages/design/tokens.css` (shared with `apps/metrics`, so keep them
+theme-neutral); the public site's dark "cosmic" layer is
+`apps/web/src/styles/theme-cosmic.css` (`adr/0007`).
+
+- **Character:** calm, near-monochrome, capable, with a single restrained
+  periwinkle accent. Indie and ambitious, not corporate. No new accent colours.
+- **Colour tokens:** accent `--c-accent` `#6e72d6` (dark `#8c90f0`), background
+  `--c-bg` `#fafaf8` (dark `#0e0f13`, cosmic `#0b0c11`), surface `--c-surface`,
+  ink `--c-ink` `#1a1b20`, border `--c-border`. Light by default, dark through
+  `prefers-color-scheme`; both must stay AA-contrast. Use the tokens, never
+  literal hex values in components.
+- **Fonts:** system stack only (`--font-sans`, `--font-mono`). No web fonts and
+  no external resources (fonts, CDNs, trackers): the site makes no third-party
+  requests.
+- **Scale:** type `--fs-300`…`--fs-900` and `--fs-hero`, spacing `--sp-1`…`--sp-9`,
+  radii `--radius-sm|--radius|--radius-lg`, widths `--maxw` / `--maxw-prose`.
+  Styling is hand-written CSS; no UI framework.
+- **Hard rules still apply:** the footer attribution, `withBase()` links, no
+  private data. A UI change must not touch them.
+
+## Brand and copy
+
+Before writing or changing any copy, read
+`project-templates/brand/BRAND.md` live from
+<https://github.com/AnunnakiCosmoCrew/project-templates/blob/main/brand/BRAND.md>.
+This file and `brand-rules.json` win on anything they cover; the
+`brand-check` run is the enforced floor.
+
+## Cloud preview notes
+
+The `preview-check` skill (`.claude/skills/preview-check/`) runs after a visible
+UI change. Start the server yourself in the background; `npm run dev` may be
+refused in auto mode, so build and serve the output instead:
+
+1. `npm run build:web`, then `npm run preview --workspace @cosmocrew/web -- --host 127.0.0.1`
+   (Astro defaults to port 4321; read the actual port from the server log).
+2. The site is served from `/` (no base path). Routes: `/`, `/products/`, `/about/`,
+   `/support/`, `/privacy/`, and `/404.html` for the not-found page.
+3. Stop the server when finished. The metrics dashboard (`apps/metrics`) is not
+   part of the public preview.
+
+The repo pins Node 24; if the session has Node 22, `npm run build:web` still
+works for a preview check but report it.

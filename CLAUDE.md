@@ -46,12 +46,15 @@ theme-neutral); the public site's dark "cosmic" layer is
 `apps/web/src/styles/theme-cosmic.css` (`adr/0007`).
 
 - **Character:** calm, near-monochrome, capable, with a single restrained
-  periwinkle accent. Indie and ambitious, not corporate. No new accent colours.
+  periwinkle accent (`--c-accent`). Indie and ambitious, not corporate. The
+  only sanctioned secondary tint is the cosmic layer's `--c-nebula-2` (violet),
+  used for glow washes; add no other accent colours.
 - **Colour tokens:** accent `--c-accent` `#6e72d6` (dark `#8c90f0`), background
   `--c-bg` `#fafaf8` (dark `#0e0f13`, cosmic `#0b0c11`), surface `--c-surface`,
   ink `--c-ink` `#1a1b20`, border `--c-border`. Light by default, dark through
-  `prefers-color-scheme`; both must stay AA-contrast. Use the tokens, never
-  literal hex values in components.
+  `prefers-color-scheme`; both must stay AA-contrast. Use the tokens: literal hex
+  belongs only in the token files and `<meta name="theme-color">`, never in
+  components.
 - **Fonts:** system stack only (`--font-sans`, `--font-mono`). No web fonts and
   no external resources (fonts, CDNs, trackers): the site makes no third-party
   requests.

@@ -87,3 +87,17 @@ refused in auto mode, so build and serve the output instead:
 
 The repo pins Node 24; if the session has Node 22, `npm run build:web` still
 works for a preview check but report it.
+
+## Accessibility
+
+Follows [luvita-docs ADR 0011](https://github.com/AnunnakiCosmoCrew/luvita-docs/blob/main/adr/0011-front-end-platform-and-accessibility-baseline.md)
+§5.1, the row for anything rendered in a browser: **WCAG 2.2 Level AA**, semantic
+landmarks, a skip link, visible focus, `prefers-reduced-motion`,
+`prefers-color-scheme`, `lang` on `<html>`.
+
+- **Automated check:** the `Accessibility check` step in `.github/workflows/ci.yml`
+  (shared `project-templates/actions/a11y-check`, axe-core on `apps/web/dist`) fails
+  on any serious or critical violation. Exceptions go in `.a11y-allow.json` at the
+  repo root, each with a reason; the file is reviewed in every PR that grows it.
+- **Manual pass:** keyboard-only walk of the main tasks per release. Last recorded
+  pass: none yet.

@@ -44,6 +44,6 @@ jobs:
       - name: Brand and claim check
         run: python3 .github/scripts/brand-check.py --rules brand-rules.json
       - name: Accessibility check
-        uses: AnunnakiCosmoCrew/project-templates/actions/a11y-check@main
+        uses: AnunnakiCosmoCrew/project-templates/actions/a11y-check@4923a63bf19c6e27760ced7c19498f295a7e0a88 # main; bump deliberately
         with:
           root: apps/web/dist

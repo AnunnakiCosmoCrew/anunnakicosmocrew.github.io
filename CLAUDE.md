@@ -49,7 +49,7 @@ theme-neutral); the public site's dark "cosmic" layer is
   periwinkle accent (`--c-accent`). Indie and ambitious, not corporate. The
   only sanctioned secondary tint is the cosmic layer's `--c-nebula-2` (violet),
   used for glow washes; add no other accent colours.
-- **Colour tokens:** accent `--c-accent` `#6e72d6` (dark `#8c90f0`), background
+- **Colour tokens:** accent `--c-accent` `#5a5ec8` (dark `#8c90f0`), background
   `--c-bg` `#fafaf8` (dark `#0e0f13`, cosmic `#0b0c11`), surface `--c-surface`,
   ink `--c-ink` `#1a1b20`, border `--c-border`. Light by default, dark through
   `prefers-color-scheme`; both must stay AA-contrast. Use the tokens: literal hex

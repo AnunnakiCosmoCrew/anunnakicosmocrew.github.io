@@ -6,7 +6,9 @@ name: CI
 # every page, the holder never a person or a bare brand, short company name only,
 # no non-CosmoCrew products, no "WordPower"/"Yaren", no private metrics. Rules and
 # reasons live in brand-rules.json; the script is vendored from
-# project-templates/actions/brand-claim-check.
+# project-templates/actions/brand-claim-check. Last, the shared axe-core check
+# (project-templates/actions/a11y-check, ADR 0011 §5.3) runs on apps/web/dist at
+# WCAG 2.2 AA; documented exceptions go in .a11y-allow.json at the repo root.
 
 on:
   pull_request:
@@ -41,3 +43,7 @@ jobs:
         run: npm run check:links
       - name: Brand and claim check
         run: python3 .github/scripts/brand-check.py --rules brand-rules.json
+      - name: Accessibility check
+        uses: AnunnakiCosmoCrew/project-templates/actions/a11y-check@4923a63bf19c6e27760ced7c19498f295a7e0a88 # main; bump deliberately
+        with:
+          root: apps/web/dist

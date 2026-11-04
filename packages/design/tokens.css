@@ -4,8 +4,8 @@
  */
 :root {
   /* Accent — the one cosmic note */
-  --c-accent: #6e72d6;
-  --c-accent-hover: #585cc4;
+  --c-accent: #5a5ec8; /* 5.2:1 on --c-bg, white on it 5.4:1 (ADR 0011 §5.2) */
+  --c-accent-hover: #4a4eb4;
   --c-accent-contrast: #ffffff;
 
   /* Surfaces & ink (light) */
@@ -14,9 +14,9 @@
   --c-surface-2: #f3f3ef;
   --c-ink: #1a1b20; /* near-black charcoal */
   --c-ink-soft: #494b55; /* secondary text */
-  --c-muted: #80828d; /* tertiary / meta */
+  --c-muted: #6b6d78; /* tertiary / meta; 4.6:1+ on every light surface */
   --c-border: #e7e7e2;
-  --c-ring: #6e72d6;
+  --c-ring: #5a5ec8;
   --c-ok: #3f9d72; /* muted "live" status dot */
 
   /* Type scale (~1.2 modular) */

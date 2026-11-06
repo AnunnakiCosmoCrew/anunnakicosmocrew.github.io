@@ -1,8 +1,8 @@
 ---
 name: SliceFocus
 slug: slicefocus
-tagline: "Visual day planning and focus sessions built around a 24-hour radial timeline."
-description: "A productivity app for planning your day in time blocks and running focus sessions, organised around a radial 24-hour clock."
+tagline: "Plan your day on a clock. It runs itself."
+description: "A day planner on a 24-hour clock, with a focus timer that runs your blocks by itself on iPhone and Mac."
 status: Live
 category: Productivity
 platform: macOS, iOS and iPadOS

@@ -2,7 +2,7 @@
 name: SliceFocus
 slug: slicefocus
 tagline: "Plan your day on a clock. It runs itself."
-description: "A day planner on a 24-hour clock, with a focus timer that runs your blocks by itself on iPhone and Mac."
+description: "A day planner on a 24-hour clock, with a Pomodoro timer that runs its rounds by itself on iPhone and Mac."
 status: Live
 category: Productivity
 platform: macOS, iOS and iPadOS

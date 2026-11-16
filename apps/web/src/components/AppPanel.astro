@@ -6,9 +6,11 @@ import { stateLine } from '../lib/state-line';
 interface Props {
   product: CollectionEntry<'products'>;
   today: Date;
+  /** Position on the page; only the first panel's screen loads eagerly. */
+  index: number;
 }
 
-const { product, today } = Astro.props;
+const { product, today, index } = Astro.props;
 const d = product.data;
 const href = d.links.website ?? d.links.appStore;
 const line = stateLine(
@@ -42,7 +44,7 @@ const dark = d.screenDark ? await getImage({ src: d.screenDark, ...crop }) : und
           alt={d.screenAlt}
           width={SIZE / 2}
           height={SIZE / 2}
-          loading="eager"
+          loading={index === 0 ? 'eager' : 'lazy'}
           decoding="async"
         />
       </picture>

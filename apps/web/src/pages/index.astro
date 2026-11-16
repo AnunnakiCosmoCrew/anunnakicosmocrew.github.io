@@ -44,7 +44,7 @@ const terms = fairTerms.filter((t) => t.confirmed);
   <section class="container apps-section" id="apps" aria-labelledby="apps-title">
     <h2 id="apps-title" class="visually-hidden">Apps</h2>
     <ul class="apps">
-      {apps.map((product) => <AppPanel product={product} today={today} />)}
+      {apps.map((product, i) => <AppPanel product={product} today={today} index={i} />)}
     </ul>
   </section>
 

@@ -64,9 +64,14 @@ export function ageInDays(date: Date, today: Date): number {
   return Math.round((utcDay(today) - utcDay(date)) / DAY_MS);
 }
 
-/** True while a release date may be shown (at most 120 days old). */
+/**
+ * True while a release date may be shown: not in the future (a typo or a
+ * release merged ahead of its day would publish a date that has not happened)
+ * and at most 120 days old.
+ */
 export function isDateShown(date: Date, today: Date): boolean {
-  return ageInDays(date, today) <= MAX_DATE_AGE_DAYS;
+  const age = ageInDays(date, today);
+  return age >= 0 && age <= MAX_DATE_AGE_DAYS;
 }
 
 /** "27 Oct 2026". */

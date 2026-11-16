@@ -44,6 +44,15 @@ test('the limit is 120 days inclusive', () => {
   assert.equal(isDateShown(daysBefore(TODAY, 0), today), true);
 });
 
+test('a date in the future is hidden', () => {
+  const today = parseDay(TODAY);
+  assert.equal(isDateShown(parseDay('2026-11-17'), today), false);
+  assert.equal(
+    stateLine({ status: 'Live', platform: 'iOS', releasedOn: parseDay('2062-11-16') }, today),
+    'Live · iPhone'
+  );
+});
+
 test('no release date gives state and platforms only', () => {
   assert.equal(
     stateLine({ status: 'Live', platform: 'Web, iOS and iPadOS' }, parseDay(TODAY)),

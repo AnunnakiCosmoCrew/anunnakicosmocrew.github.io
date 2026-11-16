@@ -39,6 +39,13 @@ copyright holder for everything here.
 
 ## Design brief
 
+**A rebuild of the public site is planned (issue 49, `adr/0009`).** Its target
+is [`DESIGN.md`](DESIGN.md): read that file before any redesign work. Until the
+rebuild lands, this section and `adr/0007` describe the live site. Small fixes
+follow the live rules below; the rebuild follows `DESIGN.md`. With the rebuild,
+"no web fonts" becomes "self-hosted fonts only" (still no font CDN and no
+external request).
+
 For any visible UI change, use the `frontend-design` skill
 (`.claude/skills/frontend-design/`) within these constraints. The tokens live in
 `packages/design/tokens.css` (shared with `apps/metrics`, so keep them

@@ -16,6 +16,7 @@ supersedes the old one and mark the old one **Superseded**.
 | [0006](0006-serve-site-at-org-root.md)            | Public site served at the org root (repo renamed to the org Pages name) | Accepted; host amended by 0008 |
 | [0007](0007-dark-cosmic-visual-identity.md)       | Cosmic dark visual identity, scoped to dark mode in apps/web   | Accepted          |
 | [0008](0008-serve-the-site-at-cosmocrew-dev.md)   | Public site served at the custom domain `cosmocrew.dev`        | Accepted          |
+| [0009](0009-round-2-visual-identity-and-self-hosted-fonts.md) | Round 2 visual identity for the rebuild; self-hosted fonts; no theme switch | Accepted; supersedes 0007 when the rebuild lands |
 
 > ADR 0003's security design (Cloudflare Access + pipeline) still stands. Per ADR
 > 0005 the dashboard code lives here as `apps/metrics`, deployed *separately* to

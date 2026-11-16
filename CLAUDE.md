@@ -39,23 +39,39 @@ copyright holder for everything here.
 
 ## Design brief
 
+**A rebuild of the public site is planned (issue 49, `adr/0009`).** Its target
+is [`DESIGN.md`](DESIGN.md): read that file before any redesign work. Until the
+rebuild lands, this section and `adr/0007` describe the live site. Small fixes
+follow the live rules below; the rebuild follows `DESIGN.md`.
+
+**The bullets marked "live site" below describe the live site only.** In the
+rebuild they are replaced, and a rebuild must not be rejected for breaking
+them, nor keep them:
+
+- Accent: one warm "lamp" colour; no periwinkle, no violet glow, no cosmic
+  layer (`DESIGN.md` section 9).
+- Fonts: one self-hosted family plus a mono, not the system stack; still no
+  font CDN and no external request (`DESIGN.md` section 8).
+
+The hard rules above apply to both.
+
 For any visible UI change, use the `frontend-design` skill
 (`.claude/skills/frontend-design/`) within these constraints. The tokens live in
 `packages/design/tokens.css` (shared with `apps/metrics`, so keep them
 theme-neutral); the public site's dark "cosmic" layer is
 `apps/web/src/styles/theme-cosmic.css` (`adr/0007`).
 
-- **Character:** calm, near-monochrome, capable, with a single restrained
+- **Character (live site):** calm, near-monochrome, capable, with a single restrained
   periwinkle accent (`--c-accent`). Indie and ambitious, not corporate. The
   only sanctioned secondary tint is the cosmic layer's `--c-nebula-2` (violet),
   used for glow washes; add no other accent colours.
-- **Colour tokens:** accent `--c-accent` `#5a5ec8` (dark `#8c90f0`), background
+- **Colour tokens (live site):** accent `--c-accent` `#5a5ec8` (dark `#8c90f0`), background
   `--c-bg` `#fafaf8` (dark `#0e0f13`, cosmic `#0b0c11`), surface `--c-surface`,
   ink `--c-ink` `#1a1b20`, border `--c-border`. Light by default, dark through
   `prefers-color-scheme`; both must stay AA-contrast. Use the tokens: literal hex
   belongs only in the token files and `<meta name="theme-color">`, never in
   components.
-- **Fonts:** system stack only (`--font-sans`, `--font-mono`). No web fonts and
+- **Fonts (live site):** system stack only (`--font-sans`, `--font-mono`). No web fonts and
   no external resources (fonts, CDNs, trackers): the site makes no third-party
   requests.
 - **Scale:** type `--fs-300`…`--fs-900` and `--fs-hero`, spacing `--sp-1`…`--sp-9`,

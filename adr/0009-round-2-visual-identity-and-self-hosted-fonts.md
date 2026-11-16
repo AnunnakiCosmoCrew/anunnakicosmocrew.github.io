@@ -55,7 +55,9 @@ needs a script that the site does not ship.
 - The site gains font files to maintain and a few tens of kilobytes on first
   load.
 - Each app's content file needs a release date that the app's release process
-  updates; a date older than 120 days is hidden.
+  updates; a date older than 120 days is hidden. Because the site is static
+  and script-free, that rule needs a scheduled daily build and deploy to hold
+  between merges.
 - The metrics dashboard must be shown unchanged by the rebuild.
 - A visitor cannot override the theme on the page. Accepted.
 

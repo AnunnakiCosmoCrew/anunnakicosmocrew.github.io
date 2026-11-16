@@ -107,6 +107,12 @@ Format: `<state> · <where it runs> · improved <date>`, for example
   hand.
 - A date older than 120 days is not shown; the line then carries the state and
   platforms only. A stale date costs as much trust as a fresh one earns.
+- **How the 120-day rule is enforced.** The site is static and ships no script,
+  so the age of a date can only be judged when the site is built. The rebuild
+  therefore adds a scheduled daily build and deploy of the public site, so a
+  date can never outlive the limit by more than a day. The build reads "today"
+  from one place, so a test can fix it. The workflow change is a founder-tier
+  change (`security`).
 - No log of releases on the home page.
 
 ## 8. Type
@@ -175,6 +181,23 @@ live before changing copy.
 The fair-terms rows are promises. Each must be true of every app it covers on
 the day the page ships; a row that is not yet true is left out.
 
+Claims in this copy, and how each was checked:
+
+- "Made by a crew that uses them every day" is a claim about the makers. It
+  comes from the constitution (the belief in section 1). `BRAND.md` was read on
+  2026-11-16: "the crew" and "we" are its preferred words for CosmoCrew, so the
+  word is right. Whether "every day" is true of each of the three apps is the
+  founder's to confirm before it ships. If it is not, the sentence becomes
+  "Made by the people who use them."
+- "Three quiet apps": the count is true today and must follow the product
+  list. "Quiet" describes the apps' behaviour (no streaks, no interrupting
+  reminders); it stands only while the fair-terms rows are true.
+- `brand-rules.json` bans "small", "indie", "humble" and "modest" in visible
+  copy, and any product that is not a CosmoCrew app. None appears here.
+- "No countdowns and no streaks to protect" is a promise in a list of terms,
+  not a positioning line, so `BRAND.md`'s rule against defining by negation
+  does not apply to it.
+
 ## 11. Template signs to avoid
 
 A page fails review if it shows any of these. The first four are the defaults
@@ -212,8 +235,11 @@ Words:
   public site.
 - Keyboard walk of the home page; visible focus everywhere.
 - Both themes checked at 390 px, 768 px and 1280 px.
-- The date lines are filled from data, and the 120-day rule is tested with an
-  old date.
+- The date lines are filled from data. The 120-day rule is tested with a fixed
+  "today": one build with a date 119 days old shows it, one with a date 121
+  days old hides it.
+- The scheduled daily build exists and has run at least once, so the rule also
+  holds when nothing is merged for months.
 - The metrics dashboard looks exactly as before.
 - **The blind check.** Two or three people who do not know the brand see the
   home page for five seconds, without the founder in the room, and answer:
@@ -224,8 +250,10 @@ Words:
 ## 13. Open points
 
 1. The final typeface.
-2. Where each app's release date comes from, and who updates it.
+2. Where each app's release date comes from, and who updates it; and the
+   founder's approval of the scheduled daily build.
 3. Whether every fair-terms row is true of all three apps today.
-4. The other pages (products, about, support, privacy) follow these rules;
+4. Whether "uses them every day" is true of all three apps.
+5. The other pages (products, about, support, privacy) follow these rules;
    their structure is not designed yet.
-5. A Turkish version is not planned here.
+6. A Turkish version is not planned here.

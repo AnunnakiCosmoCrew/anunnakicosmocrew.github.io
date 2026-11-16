@@ -1,0 +1,126 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import { stateLine } from '../lib/state-line';
+
+interface Props {
+  product: CollectionEntry<'products'>;
+  today: Date;
+}
+
+const { product, today } = Astro.props;
+const d = product.data;
+const href = d.links.website ?? d.links.appStore;
+const line = stateLine(
+  { status: d.status, platform: d.platform, releasedOn: d.releasedOn },
+  today
+);
+
+// A real screen, cropped square from the top (DESIGN.md section 5). The crop
+// happens at build time, so only the square ships.
+const SIZE = 384; // 2x the largest displayed size
+const crop = { width: SIZE, height: SIZE, fit: 'cover', position: 'top', format: 'webp' } as const;
+const light = d.screen ? await getImage({ src: d.screen, ...crop }) : undefined;
+const dark = d.screenDark ? await getImage({ src: d.screenDark, ...crop }) : undefined;
+---
+
+<li class="app" id={d.slug}>
+  <div class="app-id">
+    <Image class="app-icon" src={d.icon} alt="" width={88} height={88} />
+    <h3 class="app-name">{d.name}</h3>
+  </div>
+  <p class="app-state">{line}</p>
+  <p class="app-summary">{d.summary}</p>
+  {
+    light && (
+      <picture class="app-screen">
+        {dark && (
+          <source media="(prefers-color-scheme: dark)" srcset={dark.src} type="image/webp" />
+        )}
+        <img
+          src={light.src}
+          alt={d.screenAlt}
+          width={SIZE / 2}
+          height={SIZE / 2}
+          loading="eager"
+          decoding="async"
+        />
+      </picture>
+    )
+  }
+  {
+    href && (
+      <a class="app-link" href={href} rel="noopener noreferrer" target="_blank">
+        Open {d.name}
+      </a>
+    )
+  }
+</li>
+
+<style>
+  .app {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    padding: var(--sp-4) var(--sp-5) var(--sp-5);
+    background-color: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    scroll-margin-top: var(--sp-5);
+  }
+
+  .app-id {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+  }
+
+  .app-icon {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 22%;
+  }
+
+  .app-name {
+    font-size: var(--fs-600);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .app-state {
+    font-family: var(--font-mono);
+    font-size: var(--fs-300);
+    color: var(--c-muted);
+  }
+
+  .app-summary {
+    color: var(--c-ink-soft);
+    line-height: 1.5;
+    max-width: 60ch;
+  }
+
+  .app-screen {
+    margin-top: auto;
+  }
+
+  .app-screen img {
+    width: 100%;
+    max-width: 12rem;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: top;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--c-border);
+  }
+
+  .app-link {
+    align-self: flex-start;
+  }
+
+  /* Without a screen the link still sits at the foot of the panel. */
+  .app-summary + .app-link {
+    margin-top: auto;
+  }
+</style>

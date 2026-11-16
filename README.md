@@ -66,13 +66,13 @@ Run from the repo root (scripts fan out to the workspaces):
 apps/
 ├── web/                    # PUBLIC site → GitHub Pages
 │   ├── src/
-│   │   ├── components/      # Nav, Footer, Hero, ProductCard, Button, Prose, …
+│   │   ├── components/      # Nav, Footer, AppPanel, ProductCard, Button, Prose, …
 │   │   ├── layouts/         # BaseLayout (the page shell)
 │   │   ├── lib/url.ts       # withBase() / absoluteUrl() — base-path-safe links
 │   │   ├── content/products/# one Markdown file per product
 │   │   ├── content.config.ts# content collection schemas
 │   │   ├── pages/           # routes: home, products, about, support, 404
-│   │   └── styles/          # global.css (imports the shared tokens)
+│   │   └── styles/          # global.css, theme.css (round 2 colours), fonts.css
 │   └── public/              # favicon, og image, robots.txt, .nojekyll
 └── metrics/                # PRIVATE dashboard → Cloudflare (deployed separately)
     └── src/

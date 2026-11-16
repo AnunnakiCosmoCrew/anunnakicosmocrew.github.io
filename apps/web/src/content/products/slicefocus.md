@@ -7,6 +7,9 @@ status: Live
 category: Productivity
 platform: macOS, iOS and iPadOS
 icon: "./icons/slicefocus.png"
+summary: "For people who open their phone without deciding to. Plan the day as one circle and keep the distracting apps closed while you focus."
+screen: "./screens/slicefocus-day.png"
+screenAlt: "The SliceFocus day view on iPhone: Tuesday, 2 June laid out as coloured blocks on one 24-hour circle, with midnight at the top and Night Sleep as the largest block."
 links:
   website: "https://slicefocus.app"
   appStore: "https://apps.apple.com/app/id6761280632"

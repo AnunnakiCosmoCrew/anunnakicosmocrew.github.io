@@ -1,10 +1,8 @@
 # Design brief for the cosmocrew.dev rebuild
 
-Status: target for the rebuild, decided by the founder on 2026-11-16 ("round 2").
-The live site still follows the "Design brief" section of `CLAUDE.md`,
-`packages/design/tokens.css` and `adr/0007` until the rebuild lands. Small fixes
-to the live site follow the live rules; the rebuild follows this file. Do not
-mix the two.
+Status: decided by the founder on 2026-11-16 ("round 2"); the home page was
+rebuilt to it in issue 51. This file is the design brief of the live public
+site; the "Design brief" section of `CLAUDE.md` summarises it.
 
 Sources: the company constitution (`luvita-docs/strategy/constitution.md`,
 "Brand identity", private) and `adr/0009`. Where this file and the hard rules in

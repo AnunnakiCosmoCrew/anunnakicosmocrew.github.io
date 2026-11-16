@@ -7,6 +7,7 @@ status: Live
 category: Music
 platform: Web, iOS and iPadOS
 icon: "./icons/with-handlebars.png"
+summary: "For people learning the guitar neck. Every chord and scale tone, across every fret, in any tuning."
 links:
   website: "https://withhandlebars.com"
   appStore: "https://apps.apple.com/app/with-handlebars/id6815550767"

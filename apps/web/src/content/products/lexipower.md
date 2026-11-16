@@ -7,6 +7,7 @@ status: Live
 category: Education
 platform: iOS
 icon: "./icons/lexipower.png"
+summary: "For people learning a language one word at a time. A notebook that brings each word back just before you would forget it."
 links:
   website: "https://lexipower.app"
   appStore: "https://apps.apple.com/app/id6766093282"

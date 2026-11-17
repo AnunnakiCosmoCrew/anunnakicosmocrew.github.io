@@ -1,0 +1,90 @@
+/*
+ * Self-hosted fonts (adr/0009, DESIGN.md section 8). Files and licences:
+ * src/assets/fonts/README.md. No request leaves for another host.
+ *
+ * The family is one token each: --font-text and --font-mono. Components use
+ * --font-sans / --font-mono (the shared token names), which point here.
+ */
+
+/* Hanken Grotesk, variable weight: Latin, then Latin Extended. */
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../assets/fonts/hanken-grotesk-latin-wght.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../assets/fonts/hanken-grotesk-latin-ext-wght.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/*
+ * Fallback of similar width while the font loads (font-display: swap): a local
+ * Arial / Helvetica scaled to Hanken Grotesk's measured advance width (1.01x on
+ * running English text) and vertical metrics (ascent 1000, descent 303 per
+ * 1000 units), so the swap does not reflow the page.
+ */
+@font-face {
+  font-family: 'Hanken Grotesk Fallback';
+  src: local('Arial'), local('Helvetica'), local('Liberation Sans');
+  size-adjust: 101%;
+  ascent-override: 99%;
+  descent-override: 30%;
+  line-gap-override: 0%;
+}
+
+/* IBM Plex Mono Regular, IBM's own split files: Latin 1, 2 and 3. */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/IBMPlexMono-Regular-Latin1.woff2') format('woff2');
+  unicode-range: U+0020-007E, U+00A0-00FF, U+0131, U+0152-0153, U+02C6, U+02DA,
+    U+02DC, U+2013-2014, U+2018-201A, U+201C-201E, U+2020-2022, U+2026, U+2030,
+    U+2039-203A, U+2044, U+20AC, U+2122, U+2212, U+FB01-FB02;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/IBMPlexMono-Regular-Latin2.woff2') format('woff2');
+  unicode-range: U+0100-0101, U+0104-0130, U+0132-0151, U+0154-017F, U+018F,
+    U+0192, U+01A0-01A1, U+01AF-01B0, U+01FA-01FF, U+0218-021B, U+0237, U+0259,
+    U+1E80-1E85, U+1E9E, U+20A1, U+20A4, U+20A6, U+20A8-20AA, U+20AD-20AE,
+    U+20B1-20B2, U+20B4-20B5, U+20B8-20BA, U+20BD, U+20BF;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/IBMPlexMono-Regular-Latin3.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+01CD-01DC, U+1E0C-1E0D, U+1E12-1E13, U+1E24-1E25,
+    U+1E36-1E37, U+1E3C-1E3D, U+1E40-1E47, U+1E4A-1E4B, U+1E62-1E63, U+1E6C-1E6D,
+    U+1E70-1E71, U+1E92-1E93, U+1EA0-1EF9, U+20AB;
+}
+
+:root {
+  /* The two family tokens. Change the typeface here (and the files above). */
+  --font-text: 'Hanken Grotesk', 'Hanken Grotesk Fallback', ui-sans-serif,
+    system-ui, sans-serif;
+  --font-code: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+
+  --font-sans: var(--font-text);
+  --font-mono: var(--font-code);
+}

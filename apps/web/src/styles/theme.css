@@ -1,0 +1,62 @@
+/*
+ * Round 2 theme for the public site only (adr/0009, DESIGN.md section 9).
+ *
+ * It overrides the shared token names from @cosmocrew/design, so every page of
+ * apps/web picks it up, while packages/design/tokens.css stays theme-neutral
+ * for the metrics dashboard. Literal colours live here and in BaseHead's
+ * theme-color only.
+ *
+ * Light is the default; dark follows the system. One accent: the lamp. No
+ * gradients, no glow, no starfield.
+ *
+ * Contrast, measured with the WCAG 2.x formula when these values were written:
+ *
+ *                     light             dark
+ *   ink   on bg       15.2:1            14.8:1
+ *   ink   on panel    16.9:1            13.6:1
+ *   soft  on bg        8.7:1            11.1:1
+ *   soft  on panel     9.7:1            10.2:1
+ *   muted on bg        5.5:1             8.4:1
+ *   muted on panel     6.1:1             7.8:1
+ *   lamp  on bg        6.2:1            11.9:1
+ *   lamp  on panel     6.9:1            11.0:1
+ *
+ * All body-text pairs clear 4.5:1 (WCAG 2.2 AA).
+ */
+
+:root {
+  --c-bg: #eceef0;
+  --c-ink: #131920;
+  --c-ink-soft: #3a424c;
+  --c-muted: #56606b;
+  --c-border: #c9ced4;
+  --c-surface: #fafaf8; /* panel */
+  --c-surface-2: #fafaf8;
+  --c-lamp: #75501a;
+
+  --c-accent: var(--c-lamp);
+  --c-accent-hover: var(--c-lamp);
+  --c-accent-contrast: var(--c-surface);
+  --c-ring: var(--c-lamp);
+  --c-ok: var(--c-lamp);
+
+  --shadow-card: none;
+  --maxw: 72rem;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --c-bg: #0e1217;
+    --c-ink: #e7e4dc;
+    --c-ink-soft: #c4c7cc;
+    --c-muted: #a9aeb5;
+    --c-border: #2a313a;
+    --c-surface: #161b22;
+    --c-surface-2: #161b22;
+    --c-lamp: #e9c9a0;
+
+    color-scheme: dark;
+  }
+}

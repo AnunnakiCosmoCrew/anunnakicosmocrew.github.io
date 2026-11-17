@@ -1,10 +1,8 @@
 # Design brief for the cosmocrew.dev rebuild
 
-Status: target for the rebuild, decided by the founder on 2026-11-16 ("round 2").
-The live site still follows the "Design brief" section of `CLAUDE.md`,
-`packages/design/tokens.css` and `adr/0007` until the rebuild lands. Small fixes
-to the live site follow the live rules; the rebuild follows this file. Do not
-mix the two.
+Status: decided by the founder on 2026-11-16 ("round 2"); the home page was
+rebuilt to it in issue 51. This file is the design brief of the live public
+site; the "Design brief" section of `CLAUDE.md` summarises it.
 
 Sources: the company constitution (`luvita-docs/strategy/constitution.md`,
 "Brand identity", private) and `adr/0009`. Where this file and the hard rules in
@@ -99,8 +97,8 @@ In order:
 
 ## 7. Proof of upkeep: the state line
 
-Format: `<state> · <where it runs> · improved <date>`, for example
-"Live · iPhone, iPad, Mac · improved 27 Oct 2026".
+Format: `<state> · <where it runs> · improved <month year>`, for example
+"Live · iPhone, iPad, Mac · improved Oct 2026".
 
 - The state and platforms come from each app's content file. The date comes
   from a field that the app's release process updates. Nobody types a date by
@@ -166,7 +164,7 @@ live before changing copy.
 | Place | Text |
 | --- | --- |
 | Line | Sit down. The rest can wait. |
-| Sentence | Three quiet apps for people who keep working on themselves. Made by a crew that uses them every day. |
+| Sentence | Three quiet apps for people who keep working on themselves. |
 | SliceFocus | For people who open their phone without deciding to. Plan the day as one circle and keep the distracting apps closed while you focus. |
 | LexiPower | For people learning a language one word at a time. A notebook that brings each word back just before you would forget it. |
 | With Handlebars | For people learning the guitar neck. Every chord and scale tone, across every fret, in any tuning. |
@@ -183,12 +181,10 @@ the day the page ships; a row that is not yet true is left out.
 
 Claims in this copy, and how each was checked:
 
-- "Made by a crew that uses them every day" is a claim about the makers. It
-  comes from the constitution (the belief in section 1). `BRAND.md` was read on
-  2026-11-16: "the crew" and "we" are its preferred words for CosmoCrew, so the
-  word is right. Whether "every day" is true of each of the three apps is the
-  founder's to confirm before it ships. If it is not, the sentence becomes
-  "Made by the people who use them."
+- The sentence makes no claim about the makers. "Made by a crew that uses
+  them every day" was dropped on 2026-11-17 (the founder: not true of all
+  three apps), and "Made by the people who use them." with it. No sentence on
+  the site says that we use the apps.
 - "Three quiet apps": the count is true today and must follow the product
   list. "Quiet" describes the apps' behaviour (no streaks, no interrupting
   reminders); it stands only while the fair-terms rows are true.
@@ -253,7 +249,7 @@ Words:
 2. Where each app's release date comes from, and who updates it; and the
    founder's approval of the scheduled daily build.
 3. Whether every fair-terms row is true of all three apps today.
-4. Whether "uses them every day" is true of all three apps.
+4. (Closed 2026-11-17) The sentence carries no claim about the makers.
 5. The other pages (products, about, support, privacy) follow these rules;
    their structure is not designed yet.
 6. A Turkish version is not planned here.

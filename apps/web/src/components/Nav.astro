@@ -1,116 +1,55 @@
 ---
 import { withBase } from '../lib/url';
 
+// The home page sections (DESIGN.md section 5). From any other page these
+// lead back to the home page's sections.
+const home = withBase('');
 const navItems = [
-  { label: 'Products', path: 'products' },
-  { label: 'About', path: 'about' },
-  { label: 'Support', path: 'support' },
+  { label: 'Apps', href: `${home}#apps` },
+  { label: 'Fair terms', href: `${home}#fair-terms` },
+  { label: 'Contact', href: `${home}#contact` },
 ];
-
-const current = (Astro.url.pathname.replace(/\/+$/, '') || '/').toLowerCase();
-
-function isActive(path: string): boolean {
-  const target = (withBase(path).replace(/\/+$/, '') || '/').toLowerCase();
-  return current === target || current.startsWith(target + '/');
-}
 ---
 
 <header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href={withBase('')} aria-label="CosmoCrew — home">
-      <svg
-        class="brand-mark"
-        viewBox="0 0 32 32"
-        width="26"
-        height="26"
-        aria-hidden="true"
-        focusable="false"
-      >
-        <circle
-          cx="16"
-          cy="16"
-          r="10"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"></circle>
-        <circle cx="23.1" cy="8.9" r="3" fill="currentColor"></circle>
-      </svg>
-      <span class="brand-name">CosmoCrew</span>
-    </a>
+    <a class="brand" href={home}>CosmoCrew</a>
 
     <nav class="site-nav" aria-label="Primary">
       <ul>
         {
           navItems.map((item) => (
             <li>
-              <a
-                href={withBase(item.path)}
-                aria-current={isActive(item.path) ? 'page' : undefined}
-              >
-                {item.label}
-              </a>
+              <a href={item.href}>{item.label}</a>
             </li>
           ))
         }
-        <li>
-          <a
-            href="https://github.com/AnunnakiCosmoCrew"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            GitHub
-          </a>
-        </li>
       </ul>
     </nav>
   </div>
 </header>
 
 <style>
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background-color: color-mix(in srgb, var(--c-bg) 88%, transparent);
-    backdrop-filter: saturate(140%) blur(8px);
-    border-bottom: 1px solid var(--c-border);
-  }
-
   .header-inner {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: baseline;
     justify-content: space-between;
-    gap: var(--sp-3) var(--sp-5);
-    padding-block: var(--sp-4);
+    gap: var(--sp-2) var(--sp-5);
+    padding-block: var(--sp-5) var(--sp-3);
   }
 
   .brand {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-3);
     color: var(--c-ink);
-    font-weight: 650;
-    letter-spacing: 0.01em;
-  }
-
-  .brand:hover {
-    color: var(--c-ink);
-  }
-
-  .brand-mark {
-    color: var(--c-accent);
-    flex: none;
-  }
-
-  .brand-name {
     font-size: var(--fs-500);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-decoration: none;
   }
 
   .site-nav ul {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
     gap: var(--sp-2) var(--sp-5);
     list-style: none;
     padding: 0;
@@ -118,26 +57,10 @@ function isActive(path: string): boolean {
 
   .site-nav a {
     color: var(--c-ink-soft);
-    font-size: var(--fs-400);
-    font-weight: 550;
-    padding-block: var(--sp-1);
+    text-decoration: none;
   }
 
   .site-nav a:hover {
-    color: var(--c-ink);
-  }
-
-  .site-nav a[aria-current='page'] {
-    color: var(--c-ink);
-    box-shadow: inset 0 -2px 0 0 var(--c-accent);
-  }
-
-  @media (max-width: 36rem) {
-    .header-inner {
-      justify-content: center;
-    }
-    .site-nav ul {
-      justify-content: center;
-    }
+    color: var(--c-accent);
   }
 </style>

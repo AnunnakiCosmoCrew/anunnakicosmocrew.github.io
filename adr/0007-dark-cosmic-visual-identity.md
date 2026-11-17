@@ -1,6 +1,6 @@
 # 7. Cosmic dark visual identity for the public site
 
-- Status: Accepted
+- Status: Superseded by [0009](0009-round-2-visual-identity-and-self-hosted-fonts.md) (2026-11-16, when the round 2 rebuild landed)
 - Date: 2026-08-14
 - Deciders: CosmoCrew
 

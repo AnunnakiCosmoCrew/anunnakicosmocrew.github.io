@@ -25,6 +25,27 @@ const products = defineCollection({
         message: `platform must be ${PLATFORMS.join(' / ')} joined by ", " or " and "`,
       }),
       icon: image(),
+      /**
+       * The home page sentence: one sentence that starts with who the app is
+       * for (DESIGN.md section 10).
+       */
+      summary: z.string(),
+      /**
+       * A real screen of the app (DESIGN.md section 6), shown cropped square
+       * from the top. `screenDark` is the dark-theme screen where the app has
+       * both; it is used under `prefers-color-scheme: dark`. No stock or
+       * generated pictures, no device frames.
+       */
+      screen: image().optional(),
+      screenDark: image().optional(),
+      /** What the screen shows; required with a screen. */
+      screenAlt: z.string().optional(),
+      /**
+       * The day of the app's latest release, YYYY-MM-DD. Updated by the app's
+       * release pull request, never typed in by hand for the site. Shown in the
+       * state line while it is at most 120 days old (src/lib/state-line.ts).
+       */
+      releasedOn: z.coerce.date().optional(),
       links: z
         .object({
           website: z.url().optional(),
@@ -37,6 +58,14 @@ const products = defineCollection({
       featured: z.boolean().default(false),
       metricsEnabled: z.boolean().default(false),
       order: z.number().default(0),
+    })
+    .refine((d) => !d.screen || Boolean(d.screenAlt), {
+      message: 'a screen needs screenAlt saying what it shows',
+      path: ['screenAlt'],
+    })
+    .refine((d) => !d.screenDark || Boolean(d.screen), {
+      message: 'screenDark needs a light-theme screen as well',
+      path: ['screen'],
     }),
 });
 

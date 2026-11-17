@@ -22,9 +22,12 @@ export interface FairTerm {
   confirmed: boolean;
 }
 
-/** True once at least one row is confirmed: the section and its link show. */
-export function hasFairTerms(): boolean {
-  return fairTerms.some((t) => t.confirmed);
+/**
+ * True once at least one row is confirmed: the section and its header link
+ * show. Both call this one function, so they cannot drift apart.
+ */
+export function hasFairTerms(rows: FairTerm[] = fairTerms): boolean {
+  return rows.some((t) => t.confirmed);
 }
 
 export const fairTerms: FairTerm[] = [

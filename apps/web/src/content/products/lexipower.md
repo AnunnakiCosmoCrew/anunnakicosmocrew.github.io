@@ -8,6 +8,8 @@ category: Education
 platform: iOS
 icon: "./icons/lexipower.png"
 summary: "For people learning a language one word at a time. A notebook that brings each word back just before you would forget it."
+screen: "./screens/lexipower-home.png"
+screenAlt: "The LexiPower home screen on iPhone: six words collected, a bar showing their CEFR levels from B2 to C2, and three words due for review."
 links:
   website: "https://lexipower.app"
   appStore: "https://apps.apple.com/app/id6766093282"

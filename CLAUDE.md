@@ -25,6 +25,12 @@ copyright holder for everything here.
   across software surfaces undoes the software-only positioning that
   `luvita-web/adr/0003` protects. The full name belongs in legal-identity
   blocks on luvita.tr.
+- **The Luvita icon sits beside the company name in that line**, as the
+  brand rules ask (`luvita-docs/brand/README.md`; founder, 2026-11-17). It is
+  drawn by CSS on the link (`.luvita::before` in `Footer.astro`, from
+  `apps/web/src/assets/brand/luvita-icon-small.svg`), so the sentence in the
+  HTML stays exactly as above. One colour, the link's text colour; never the
+  lamp accent, never redrawn, never under 16 px.
 - **`© CosmoCrew` leads; it is never replaced by `© Luvita`.** CosmoCrew is a
   deliberate consumer brand with its own indie, ambitious voice. The
   attribution clause is appended to it, and the site is not rebranded. Do not
@@ -39,44 +45,47 @@ copyright holder for everything here.
 
 ## Design brief
 
-**A rebuild of the public site is planned (issue 49, `adr/0009`).** Its target
-is [`DESIGN.md`](DESIGN.md): read that file before any redesign work. Until the
-rebuild lands, this section and `adr/0007` describe the live site. Small fixes
-follow the live rules below; the rebuild follows `DESIGN.md`.
-
-**The bullets marked "live site" below describe the live site only.** In the
-rebuild they are replaced, and a rebuild must not be rejected for breaking
-them, nor keep them:
-
-- Accent: one warm "lamp" colour; no periwinkle, no violet glow, no cosmic
-  layer (`DESIGN.md` section 9).
-- Fonts: one self-hosted family plus a mono, not the system stack; still no
-  font CDN and no external request (`DESIGN.md` section 8).
-
-The hard rules above apply to both.
+The live public site follows [`DESIGN.md`](DESIGN.md) ("round 2", `adr/0009`,
+which supersedes `adr/0007`). Read it before any visible change; the hard rules
+above win over it.
 
 For any visible UI change, use the `frontend-design` skill
-(`.claude/skills/frontend-design/`) within these constraints. The tokens live in
-`packages/design/tokens.css` (shared with `apps/metrics`, so keep them
-theme-neutral); the public site's dark "cosmic" layer is
-`apps/web/src/styles/theme-cosmic.css` (`adr/0007`).
+(`.claude/skills/frontend-design/`) within these constraints.
 
-- **Character (live site):** calm, near-monochrome, capable, with a single restrained
-  periwinkle accent (`--c-accent`). Indie and ambitious, not corporate. The
-  only sanctioned secondary tint is the cosmic layer's `--c-nebula-2` (violet),
-  used for glow washes; add no other accent colours.
-- **Colour tokens (live site):** accent `--c-accent` `#5a5ec8` (dark `#8c90f0`), background
-  `--c-bg` `#fafaf8` (dark `#0e0f13`, cosmic `#0b0c11`), surface `--c-surface`,
-  ink `--c-ink` `#1a1b20`, border `--c-border`. Light by default, dark through
-  `prefers-color-scheme`; both must stay AA-contrast. Use the tokens: literal hex
-  belongs only in the token files and `<meta name="theme-color">`, never in
-  components.
-- **Fonts (live site):** system stack only (`--font-sans`, `--font-mono`). No web fonts and
-  no external resources (fonts, CDNs, trackers): the site makes no third-party
-  requests.
-- **Scale:** type `--fs-300`…`--fs-900` and `--fs-hero`, spacing `--sp-1`…`--sp-9`,
-  radii `--radius-sm|--radius|--radius-lg`, widths `--maxw` / `--maxw-prose`.
-  Styling is hand-written CSS; no UI framework.
+- **Character:** a good library, somewhere in space: quiet, warm, unhurried.
+  The library is a feeling, never a picture; space is the setting, not the
+  subject. Nothing moves by itself, nothing asks for attention twice.
+- **Colour:** one warm "lamp" accent (`--c-lamp`, also `--c-accent`) on a
+  deep blue-grey (dark) or cool light grey (light). Light by default, dark
+  through `prefers-color-scheme`; both are designed as equals and both stay AA.
+  The values live in the web-only theme file `apps/web/src/styles/theme.css`,
+  with measured contrast in its header. The lamp appears on link underlines,
+  hover and focus only. No gradients, no glow, no starfield, no second accent.
+  Literal hex belongs only in `theme.css` and `<meta name="theme-color">`.
+- **Shared tokens:** `packages/design/tokens.css` is shared with `apps/metrics`;
+  keep it theme-neutral and untouched by public-site work. `theme.css`
+  overrides its colour names for `apps/web` only. Scale tokens (`--fs-*`,
+  `--sp-*`, `--radius*`, `--maxw*`) still come from it.
+- **Fonts:** self-hosted only (`adr/0009`). Hanken Grotesk (text) and IBM Plex
+  Mono (state lines only, never running text), WOFF2 in
+  `apps/web/src/assets/fonts/` with their OFL licences; `@font-face` rules and
+  the family tokens (`--font-text`, `--font-code`) in
+  `apps/web/src/styles/fonts.css`. The typeface is still open: change it there.
+  No font CDN, no request to another host.
+- **Home page:** header, the line and sentence, three app panels (icon, state
+  line, sentence, a real screen cropped square, one text link), fair terms,
+  contact, footer. At 1280 x 720 all three panels are visible. Copy that is a
+  promise lives in `apps/web/src/lib/home-copy.ts` and ships only once the
+  founder confirms it.
+- **State line:** `<state> · <platforms> · improved <month year>`, built by
+  `apps/web/src/lib/state-line.ts` from each product's `releasedOn`; a date
+  older than 120 days is hidden. "Today" comes from `siteToday()` only
+  (`SITE_TODAY=YYYY-MM-DD` fixes it); tests run in the web workspace's `check`.
+- **App pictures:** real screens only, stored in this repository, with alt
+  text that says what the screen shows; no device frames, no stock or
+  generated pictures. The app's own icon is its mark.
+- **No script:** no theme switch; the only `<script>` is JSON-LD data.
+- Styling is hand-written CSS; no UI framework.
 - **Hard rules still apply:** the footer attribution, `withBase()` links, no
   private data. A UI change must not touch them.
 

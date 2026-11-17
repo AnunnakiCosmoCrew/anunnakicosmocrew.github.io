@@ -1,137 +1,65 @@
 ---
 import { withBase } from '../lib/url';
-import { koFiUrl } from '../lib/site';
 
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
   <div class="container footer-inner">
-    <div class="footer-brand">
-      <span class="footer-name">CosmoCrew</span>
-      <p>Calm, capable software, crafted to last.</p>
-      <a class="footer-support" href={koFiUrl} rel="noopener noreferrer" target="_blank"><span class="heart" aria-hidden="true">&#9829;</span>Support the crew</a>
-    </div>
-
-    <nav class="footer-nav" aria-label="Footer">
-      <a href={withBase('products')}>Products</a>
-      <a href={withBase('about')}>About</a>
-      <a href={withBase('support')}>Support</a>
-      <a href={withBase('privacy')}>Privacy</a>
-      <a
-        href="https://github.com/AnunnakiCosmoCrew"
-        rel="noopener noreferrer"
-        target="_blank">GitHub</a
-      >
-      <a href="mailto:contact@cosmocrew.dev">Contact</a>
-    </nav>
-  </div>
-
-  <div class="container footer-base">
     <p>
       &copy; {year} CosmoCrew &mdash; a brand of <a
+        class="luvita"
         href="https://luvita.tr/"
         rel="noopener noreferrer"
         target="_blank">Luvita Teknoloji Ltd. &#350;ti.</a
       >
     </p>
+    <a href={withBase('privacy')}>Privacy</a>
   </div>
 </footer>
 
 <style>
   .site-footer {
-    margin-top: var(--sp-9);
+    margin-top: var(--sp-8);
     border-top: 1px solid var(--c-border);
-    padding-block: var(--sp-7) var(--sp-6);
-    color: var(--c-ink-soft);
-    background-color: var(--c-surface);
+    padding-block: var(--sp-5) var(--sp-6);
+    color: var(--c-muted);
+    font-size: var(--fs-300);
   }
 
   .footer-inner {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--sp-5) var(--sp-7);
     justify-content: space-between;
-    align-items: flex-start;
-  }
-
-  .footer-name {
-    font-weight: 650;
-    color: var(--c-ink);
-  }
-
-  .footer-brand p {
-    margin-top: var(--sp-1);
-    font-size: var(--fs-300);
-    color: var(--c-muted);
-  }
-
-  .footer-support {
-    display: inline-flex;
-    align-items: center;
-    margin-top: var(--sp-4);
-    padding: 0.5rem 0.95rem;
-    font-size: var(--fs-400);
-    font-weight: 600;
-    color: var(--c-ink);
-    border: 1px solid color-mix(in srgb, var(--c-accent) 45%, var(--c-border));
-    border-radius: 999px;
-    transition:
-      color var(--dur) var(--ease),
-      background-color var(--dur) var(--ease),
-      border-color var(--dur) var(--ease),
-      transform var(--dur) var(--ease);
-  }
-
-  .footer-support:hover {
-    color: var(--c-accent-contrast);
-    background-color: var(--c-accent);
-    border-color: var(--c-accent);
-  }
-
-  .footer-support .heart {
-    color: var(--c-accent);
-    margin-right: var(--sp-2);
-  }
-
-  .footer-support:hover .heart {
-    color: var(--c-accent-contrast);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .footer-support:hover {
-      transform: translateY(-1px);
-    }
-  }
-
-  .footer-nav {
-    display: flex;
-    flex-wrap: wrap;
     gap: var(--sp-3) var(--sp-5);
   }
 
-  .footer-nav a {
+  .site-footer a {
     color: var(--c-ink-soft);
-    font-size: var(--fs-400);
   }
 
-  .footer-nav a:hover {
-    color: var(--c-ink);
+  /* The Luvita icon beside the company name (luvita-docs/brand/README.md):
+     the small drawing, in one colour, taking the link's text colour. It is
+     drawn by CSS on purpose. The attribution line in the HTML stays exactly
+     the sentence the brand check requires, and a reader without CSS still
+     gets the whole line. Never smaller than 16 px; do not recolour it or
+     give it the lamp accent. */
+  .luvita {
+    /* The icon never ends a line apart from the name. */
+    white-space: nowrap;
   }
 
-  .footer-base {
-    margin-top: var(--sp-6);
-    font-size: var(--fs-300);
-    color: var(--c-muted);
-  }
-
-  .footer-base a {
-    color: var(--c-ink-soft);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-  }
-
-  .footer-base a:hover {
-    color: var(--c-ink);
+  @supports (mask-image: url('')) or (-webkit-mask-image: url('')) {
+    .luvita::before {
+      content: '';
+      display: inline-block;
+      width: max(16px, 1.2em);
+      height: max(16px, 1.2em);
+      margin-inline-end: 0.25em;
+      vertical-align: -0.28em;
+      background-color: currentColor;
+      -webkit-mask: url('../assets/brand/luvita-icon-small.svg') center / contain no-repeat;
+      mask: url('../assets/brand/luvita-icon-small.svg') center / contain no-repeat;
+    }
   }
 </style>

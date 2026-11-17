@@ -1,45 +1,215 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/Hero.astro';
-import Button from '../components/Button.astro';
-import ProductCard from '../components/ProductCard.astro';
-import { withBase } from '../lib/url';
+import AppPanel from '../components/AppPanel.astro';
 import { organizationJsonLd } from '../lib/jsonld';
+import { siteToday } from '../lib/state-line';
+import {
+  line,
+  sentence,
+  fairTerms,
+  fairTermsLine,
+  contactSentence,
+  contactAddress,
+} from '../lib/home-copy';
+import lockScreen from '../assets/screens/slicefocus-lockscreen.jpg';
 
-const featured = (await getCollection('products'))
+const apps = (await getCollection('products'))
   .filter((p) => p.data.featured)
   .sort((a, b) => a.data.order - b.data.order);
+
+const today = siteToday();
+const terms = fairTerms.filter((t) => t.confirmed);
 ---
 
 <BaseLayout
-  title="CosmoCrew — calm, capable software, crafted to last"
-  description="CosmoCrew builds calm, capable software that does one thing exceptionally well. SliceFocus, LexiPower and With Handlebars are live now, each made with the same care."
+  title="CosmoCrew: SliceFocus, LexiPower and With Handlebars"
+  description="Three quiet apps for people who keep working on themselves: SliceFocus, LexiPower and With Handlebars."
   path=""
   jsonLd={organizationJsonLd()}
 >
-  <Hero
-    eyebrow="Resilient ambition"
-    title="Calm, capable software, crafted to last."
-    lead="CosmoCrew builds apps that do one thing exceptionally well and respect your attention — each one built to earn a permanent place on your home screen, and to stay there."
-  >
-    <Fragment slot="actions">
-      <Button href={withBase('products')}>Explore products</Button>
-      <Button
-        href="https://github.com/AnunnakiCosmoCrew"
-        variant="secondary"
-        external>View on GitHub</Button
-      >
-    </Fragment>
-  </Hero>
-
-  <section class="container">
-    <div class="section-head">
-      <p class="eyebrow">In orbit now</p>
-      <h2>Made with care</h2>
-    </div>
-    <div class="product-grid">
-      {featured.map((product) => <ProductCard product={product} />)}
+  <section class="container intro" aria-labelledby="line">
+    <h1 id="line" class="line">
+      {line.split(/(?<=\.) /).map((part) => <span>{part}</span>)}
+    </h1>
+    <div class="intro-side">
+      <p class="sentence">{sentence}</p>
+      <ul class="app-index" aria-label="The apps">
+        {apps.map((app) => <li><a href={`#${app.data.slug}`}>{app.data.name}</a></li>)}
+      </ul>
     </div>
   </section>
+
+  <section class="container apps-section" id="apps" aria-labelledby="apps-title">
+    <h2 id="apps-title" class="visually-hidden">Apps</h2>
+    <ul class="apps">
+      {apps.map((product, i) => <AppPanel product={product} today={today} index={i} />)}
+    </ul>
+  </section>
+
+  <section class="container fair" id="fair-terms" aria-labelledby="fair-title">
+    <Image
+      class="fair-picture"
+      src={lockScreen}
+      width={360}
+      alt="A SliceFocus focus timer on the iPhone lock screen: Exercise, work round 1 of 4, 24:10 left, with Pause and Stop."
+      loading="lazy"
+    />
+    <div class="fair-text">
+      <h2 id="fair-title" class="fair-line">{fairTermsLine}</h2>
+      {
+        terms.length > 0 && (
+          <ul class="fair-terms">
+            {terms.map((t) => <li>{t.text}</li>)}
+          </ul>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="container contact" id="contact" aria-labelledby="contact-title">
+    <h2 id="contact-title" class="visually-hidden">Contact</h2>
+    <p class="contact-sentence">{contactSentence}</p>
+    <p><a href={`mailto:${contactAddress}`}>{contactAddress}</a></p>
+  </section>
 </BaseLayout>
+
+<style>
+  /* ---- The line and the sentence ---- */
+  .intro {
+    display: grid;
+    gap: var(--sp-4) var(--sp-7);
+    align-items: end;
+    padding-block: var(--sp-3) var(--sp-5);
+  }
+
+  .line {
+    font-size: clamp(2.5rem, 2.2vw + 1.8rem, 3.75rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+
+  .line span {
+    display: block;
+  }
+
+  .sentence {
+    font-size: var(--fs-500);
+    line-height: 1.5;
+    color: var(--c-ink-soft);
+    max-width: 36ch;
+    padding-bottom: 0.35em;
+  }
+
+  /* On a phone the panels stack; the three names stay on the first screen. */
+  .app-index {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-5);
+    list-style: none;
+    padding: 0;
+    margin-top: var(--sp-4);
+  }
+
+  @media (min-width: 52rem) {
+    .intro {
+      grid-template-columns: 1fr 1fr;
+    }
+    .app-index {
+      display: none;
+    }
+  }
+
+  /* Keeps the three panels above the fold at 1280 x 720. */
+  @media (min-width: 64rem) {
+    .intro {
+      padding-bottom: var(--sp-3);
+    }
+  }
+
+  /* ---- The three apps ---- */
+  .intro + .apps-section {
+    margin-top: 0;
+  }
+
+  .apps {
+    display: grid;
+    gap: var(--sp-5);
+    list-style: none;
+    padding: 0;
+  }
+
+  @media (min-width: 52rem) {
+    .apps {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-4);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .apps {
+      gap: var(--sp-5);
+    }
+  }
+
+  /* ---- Fair terms ---- */
+  .fair {
+    display: grid;
+    gap: var(--sp-6);
+    align-items: center;
+    margin-top: var(--sp-9);
+  }
+
+  .fair-picture {
+    width: 100%;
+    max-width: 18rem;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: 50% 82%;
+    border-radius: var(--radius);
+    border: 1px solid var(--c-border);
+  }
+
+  .fair-line {
+    font-size: clamp(2rem, 1.5vw + 1.5rem, 2.75rem);
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .fair-terms {
+    margin-top: var(--sp-5);
+    padding: 0;
+    list-style: none;
+    max-width: 40rem;
+  }
+
+  .fair-terms li {
+    padding-block: var(--sp-3);
+    border-top: 1px solid var(--c-border);
+    color: var(--c-ink-soft);
+  }
+
+  @media (min-width: 48rem) {
+    .fair {
+      grid-template-columns: 18rem 1fr;
+      gap: var(--sp-8);
+    }
+  }
+
+  /* ---- Contact ---- */
+  .contact {
+    margin-top: var(--sp-8);
+  }
+
+  .contact-sentence {
+    font-size: var(--fs-500);
+    line-height: 1.5;
+    color: var(--c-ink-soft);
+    max-width: 40ch;
+    margin-bottom: var(--sp-3);
+  }
+</style>

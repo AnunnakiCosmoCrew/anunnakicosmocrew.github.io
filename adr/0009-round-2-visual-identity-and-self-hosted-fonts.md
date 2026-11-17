@@ -1,6 +1,6 @@
 # 9. Round 2 visual identity for the public site, and self-hosted fonts
 
-- Status: Accepted (applies to the rebuild; supersedes 0007 when the rebuild lands)
+- Status: Accepted; supersedes 0007 (the rebuild landed with issue 51)
 - Date: 2026-11-16
 - Deciders: the founder
 

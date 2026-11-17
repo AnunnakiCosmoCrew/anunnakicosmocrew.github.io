@@ -4,6 +4,12 @@ on:
   # Build and deploy on every push to main.
   push:
     branches: [main]
+  # Rebuild every day so the 120-day rule for release dates on the home page
+  # holds between merges (DESIGN.md section 7). 03:17 UTC, off the hour.
+  # GitHub disables this schedule after 60 days with no repository activity;
+  # DESIGN.md section 7 says how to switch it back on.
+  schedule:
+    - cron: '17 3 * * *'
   # Allow manual runs from the Actions tab.
   workflow_dispatch:
 

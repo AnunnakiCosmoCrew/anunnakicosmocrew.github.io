@@ -122,6 +122,13 @@ const terms = fairTerms.filter((t) => t.confirmed);
     }
   }
 
+  /* Keeps the three panels above the fold at 1280 x 720. */
+  @media (min-width: 64rem) {
+    .intro {
+      padding-bottom: var(--sp-3);
+    }
+  }
+
   /* ---- The three apps ---- */
   .intro + .apps-section {
     margin-top: 0;

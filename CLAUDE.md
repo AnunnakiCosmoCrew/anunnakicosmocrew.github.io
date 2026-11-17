@@ -77,7 +77,7 @@ For any visible UI change, use the `frontend-design` skill
   contact, footer. At 1280 x 720 all three panels are visible. Copy that is a
   promise lives in `apps/web/src/lib/home-copy.ts` and ships only once the
   founder confirms it.
-- **State line:** `<state> · <platforms> · improved <date>`, built by
+- **State line:** `<state> · <platforms> · improved <month year>`, built by
   `apps/web/src/lib/state-line.ts` from each product's `releasedOn`; a date
   older than 120 days is hidden. "Today" comes from `siteToday()` only
   (`SITE_TODAY=YYYY-MM-DD` fixes it); tests run in the web workspace's `check`.

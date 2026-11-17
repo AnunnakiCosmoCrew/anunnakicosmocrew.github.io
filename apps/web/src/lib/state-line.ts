@@ -3,7 +3,9 @@
  *
  *   <state> · <where it runs> · improved <date>
  *
- * The date is shown only while it is at most 120 days old; after that the line
+ * The date is shown as month and year only ("Oct 2026"), never the day; the
+ * full date stays in the content file and the 120-day rule is computed from it.
+ * It is shown only while it is at most 120 days old; after that the line
  * carries the state and platforms only, because a stale date costs as much
  * trust as a fresh one earns. The site is static and ships no script, so the
  * age is judged when the site is built, against `siteToday()`: the one place
@@ -74,9 +76,9 @@ export function isDateShown(date: Date, today: Date): boolean {
   return age >= 0 && age <= MAX_DATE_AGE_DAYS;
 }
 
-/** "27 Oct 2026". */
-export function formatDay(date: Date): string {
-  return `${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+/** "Oct 2026": month and year only, never the day. */
+export function formatMonth(date: Date): string {
+  return `${MONTHS[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
 }
 
 /** "macOS, iOS and iPadOS" -> "iPhone, iPad, Mac". */
@@ -99,7 +101,7 @@ export interface StateLineInput {
 export function stateLine(input: StateLineInput, today: Date): string {
   const parts = [input.status, platformNames(input.platform)];
   if (input.releasedOn && isDateShown(input.releasedOn, today)) {
-    parts.push(`improved ${formatDay(input.releasedOn)}`);
+    parts.push(`improved ${formatMonth(input.releasedOn)}`);
   }
   return parts.filter(Boolean).join(' · ');
 }

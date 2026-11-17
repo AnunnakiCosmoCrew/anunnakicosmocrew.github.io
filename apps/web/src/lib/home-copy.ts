@@ -46,17 +46,10 @@ export const fairTerms: FairTerm[] = [
   },
 ];
 
-/** "Made by a crew that uses them every day": confirmed for all three apps? */
-export const makersUseThemEveryDay = false;
-
 export const line = 'Sit down. The rest can wait.';
 
-export const sentence = [
-  'Three quiet apps for people who keep working on themselves.',
-  makersUseThemEveryDay
-    ? 'Made by a crew that uses them every day.'
-    : 'Made by the people who use them.',
-].join(' ');
+export const sentence =
+  'Three quiet apps for people who keep working on themselves.';
 
 export const fairTermsLine = 'The app waits for you.';
 

@@ -16,5 +16,6 @@ links:
   support: "https://cosmocrew.dev/lexipower-support/"
 featured: true
 metricsEnabled: false
+releasedOn: 2026-10-25
 order: 2
 ---

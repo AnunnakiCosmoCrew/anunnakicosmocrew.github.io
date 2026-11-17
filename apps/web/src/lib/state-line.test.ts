@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   ageInDays,
-  formatDay,
+  formatMonth,
   isDateShown,
   parseDay,
   platformNames,
@@ -24,7 +24,7 @@ test('a date 119 days old is shown', () => {
   assert.equal(ageInDays(released, today), 119);
   assert.equal(
     stateLine({ status: 'Live', platform: 'macOS, iOS and iPadOS', releasedOn: released }, today),
-    `Live · iPhone, iPad, Mac · improved ${formatDay(released)}`
+    `Live · iPhone, iPad, Mac · improved ${formatMonth(released)}`
   );
 });
 
@@ -60,13 +60,13 @@ test('no release date gives state and platforms only', () => {
   );
 });
 
-test('the design example formats as written', () => {
+test('the date shows month and year only, never the day', () => {
   assert.equal(
     stateLine(
       { status: 'Live', platform: 'macOS, iOS and iPadOS', releasedOn: parseDay('2026-10-27') },
       parseDay(TODAY)
     ),
-    'Live · iPhone, iPad, Mac · improved 27 Oct 2026'
+    'Live · iPhone, iPad, Mac · improved Oct 2026'
   );
 });
 

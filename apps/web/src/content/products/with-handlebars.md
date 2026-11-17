@@ -17,5 +17,6 @@ links:
   github: "https://github.com/AnunnakiCosmoCrew/with-handlebars-web"
 featured: true
 metricsEnabled: false
+releasedOn: 2026-11-04
 order: 3
 ---

@@ -16,5 +16,6 @@ links:
   docs: "https://cosmocrew.dev/slicefocus-docs/"
 featured: true
 metricsEnabled: false
+releasedOn: 2026-10-27
 order: 1
 ---

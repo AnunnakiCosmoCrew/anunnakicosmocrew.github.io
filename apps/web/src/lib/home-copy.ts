@@ -4,7 +4,10 @@
  * of all three apps on the day the page ships (issue 51, "Decisions that are
  * the founder's"). Until then:
  *
- * - a fair-terms row with `confirmed: false` is left out of the page;
+ * - a fair-terms row with `confirmed: false` is left out of the page, and
+ *   while no row is confirmed the whole section and its header link are
+ *   hidden (founder, 2026-11-17: a section with no rows reads as an empty
+ *   promise). Confirming the first row brings both back;
  * - the sentence uses the fallback wording.
  *
  * To ship a row, set its `confirmed` to true in the pull request that records
@@ -17,6 +20,11 @@ export interface FairTerm {
   topic: string;
   text: string;
   confirmed: boolean;
+}
+
+/** True once at least one row is confirmed: the section and its link show. */
+export function hasFairTerms(): boolean {
+  return fairTerms.some((t) => t.confirmed);
 }
 
 export const fairTerms: FairTerm[] = [

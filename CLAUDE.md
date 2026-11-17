@@ -73,7 +73,8 @@ For any visible UI change, use the `frontend-design` skill
   `apps/web/src/styles/fonts.css`. The typeface is still open: change it there.
   No font CDN, no request to another host.
 - **Home page:** header, the line and sentence, three app panels (icon, state
-  line, sentence, a real screen cropped square, one text link), fair terms,
+  line, sentence, a real screen cropped square, one text link), fair terms
+  (hidden, with its header link, until a row is confirmed),
   contact, footer. At 1280 x 720 all three panels are visible. Copy that is a
   promise lives in `apps/web/src/lib/home-copy.ts` and ships only once the
   founder confirms it.

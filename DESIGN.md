@@ -69,7 +69,8 @@ content, the apps' icons and the light, not in an unusual layout.
 
 In order:
 
-1. **Header.** Name left; Apps, Fair terms, Contact right.
+1. **Header.** Name left; Apps, Fair terms, Contact right. "Fair terms" shows
+   only while its section does (see 4).
 2. **One line and one sentence**, side by side at desktop width: the line large
    and light (about 60 px, weight 300) on the left, the sentence on the right.
    Not centred. No buttons.
@@ -83,6 +84,10 @@ In order:
    stack; the three names must still be reachable on the first screen.
 4. **Fair terms.** The lock-screen picture beside the line "The app waits for
    you." and four plain rows: no hurry, trials, if you say no, reminders.
+   Only rows the founder has confirmed as true of all three apps are shown,
+   and while none is, the section and its header link are hidden (founder,
+   2026-11-17). Confirming the first row in `apps/web/src/lib/home-copy.ts`
+   brings both back.
 5. **Contact.** One sentence and the address.
 6. **Footer.** The attribution line, and Privacy.
 

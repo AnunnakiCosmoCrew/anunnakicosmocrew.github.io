@@ -26,7 +26,13 @@ const image = absoluteUrl(ogImage);
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
 
-<link rel="icon" type="image/svg+xml" href={withBase('favicon.svg')} />
+<!-- The CosmoCrew mark (luvita-docs/brand/README.md). The SVG is the small
+     drawing and follows the system theme; the PNGs are the lamp tile, for the
+     places that cannot read an SVG. -->
+<link rel="icon" type="image/svg+xml" sizes="any" href={withBase('favicon.svg')} />
+<link rel="icon" type="image/png" sizes="96x96" href={withBase('favicon-96.png')} />
+<link rel="apple-touch-icon" href={withBase('apple-touch-icon.png')} />
+<link rel="manifest" href={withBase('site.webmanifest')} />
 <meta name="theme-color" content="#eceef0" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#0e1217" media="(prefers-color-scheme: dark)" />
 

@@ -84,6 +84,21 @@ For any visible UI change, use the `frontend-design` skill
 - **App pictures:** real screens only, stored in this repository, with alt
   text that says what the screen shows; no device frames, no stock or
   generated pictures. The app's own icon is its mark.
+- **CosmoCrew mark:** the raven in flight, "Glide" (founder, 2026-11-17). Its
+  drawings, colours and rules live in `luvita-docs/brand/README.md`; read that
+  first. The bird flies to the right: never mirror, rotate, outline, redraw or
+  animate it, and give it no second colour.
+  - In the header it sits beside the name (`Nav.astro`), filled with `--c-ink`
+    and the eye with `--c-lamp`. It is never shown without the name on a page.
+  - `apps/web/public/favicon.svg` and `apps/metrics/public/favicon.svg` are
+    the brand's small drawing, copied unchanged.
+  - `favicon-96.png`, `apple-touch-icon.png`, `icon-192.png` and
+    `icon-512.png` are the brand's lamp tile, made with
+    `rsvg-convert -w N -h N cosmocrew-mark-tile.svg`; `site.webmanifest`
+    lists the last two.
+  - `public/og.png` is the mark and the name on the light ground, rendered
+    from `apps/web/src/assets/brand/og-card.html` (the command is in that
+    file). A sentence added to it is copy and needs a founder look.
 - **No script:** no theme switch; the only `<script>` is JSON-LD data.
 - Styling is hand-written CSS; no UI framework.
 - **Hard rules still apply:** the footer attribution, `withBase()` links, no

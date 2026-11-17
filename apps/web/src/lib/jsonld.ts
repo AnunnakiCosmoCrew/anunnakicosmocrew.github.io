@@ -16,7 +16,7 @@ export function organizationJsonLd(): JsonLd {
     '@type': 'Organization',
     name: 'CosmoCrew',
     url: absoluteUrl(),
-    logo: absoluteUrl('favicon.svg'),
+    logo: absoluteUrl('icon-512.png'),
     parentOrganization: {
       '@type': 'Organization',
       name: 'Luvita Teknoloji Ltd. Şti.',

@@ -96,6 +96,23 @@ const dark = d.screenDark ? await getImage({ src: d.screenDark, ...crop }) : und
     color: var(--c-muted);
   }
 
+  /* Side by side the state lines wrap at different points; reserve two lines
+     so the three panels match and the links line up. */
+  @media (min-width: 52rem) {
+    .app-state {
+      min-height: 2lh;
+    }
+  }
+
+  /* At desktop width the three panels must end above 720 px (DESIGN.md
+     section 5), so the vertical rhythm tightens. */
+  @media (min-width: 64rem) {
+    .app {
+      gap: var(--sp-2);
+      padding-bottom: var(--sp-4);
+    }
+  }
+
   .app-summary {
     color: var(--c-ink-soft);
     line-height: 1.5;

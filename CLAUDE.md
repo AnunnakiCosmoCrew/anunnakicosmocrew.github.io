@@ -25,6 +25,12 @@ copyright holder for everything here.
   across software surfaces undoes the software-only positioning that
   `luvita-web/adr/0003` protects. The full name belongs in legal-identity
   blocks on luvita.tr.
+- **The Luvita icon sits beside the company name in that line**, as the
+  brand rules ask (`luvita-docs/brand/README.md`; founder, 2026-11-17). It is
+  drawn by CSS on the link (`.luvita::before` in `Footer.astro`, from
+  `apps/web/src/assets/brand/luvita-icon-small.svg`), so the sentence in the
+  HTML stays exactly as above. One colour, the link's text colour; never the
+  lamp accent, never redrawn, never under 16 px.
 - **`© CosmoCrew` leads; it is never replaced by `© Luvita`.** CosmoCrew is a
   deliberate consumer brand with its own indie, ambitious voice. The
   attribution clause is appended to it, and the site is not rebranded. Do not

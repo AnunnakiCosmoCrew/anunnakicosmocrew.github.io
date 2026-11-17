@@ -8,6 +8,7 @@ const year = new Date().getFullYear();
   <div class="container footer-inner">
     <p>
       &copy; {year} CosmoCrew &mdash; a brand of <a
+        class="luvita"
         href="https://luvita.tr/"
         rel="noopener noreferrer"
         target="_blank">Luvita Teknoloji Ltd. &#350;ti.</a
@@ -35,5 +36,30 @@ const year = new Date().getFullYear();
 
   .site-footer a {
     color: var(--c-ink-soft);
+  }
+
+  /* The Luvita icon beside the company name (luvita-docs/brand/README.md):
+     the small drawing, in one colour, taking the link's text colour. It is
+     drawn by CSS on purpose. The attribution line in the HTML stays exactly
+     the sentence the brand check requires, and a reader without CSS still
+     gets the whole line. Never smaller than 16 px; do not recolour it or
+     give it the lamp accent. */
+  .luvita {
+    /* The icon never ends a line apart from the name. */
+    white-space: nowrap;
+  }
+
+  @supports (mask-image: url('')) or (-webkit-mask-image: url('')) {
+    .luvita::before {
+      content: '';
+      display: inline-block;
+      width: max(16px, 1.2em);
+      height: max(16px, 1.2em);
+      margin-inline-end: 0.25em;
+      vertical-align: -0.28em;
+      background-color: currentColor;
+      -webkit-mask: url('../assets/brand/luvita-icon-small.svg') center / contain no-repeat;
+      mask: url('../assets/brand/luvita-icon-small.svg') center / contain no-repeat;
+    }
   }
 </style>

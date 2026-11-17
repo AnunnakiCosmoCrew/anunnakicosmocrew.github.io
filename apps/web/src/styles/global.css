@@ -1,5 +1,6 @@
 @import '@cosmocrew/design/tokens.css';
-@import './theme-cosmic.css';
+@import './fonts.css';
+@import './theme.css';
 
 /* ---------- Reset ---------- */
 *,
@@ -26,6 +27,7 @@ body {
   line-height: var(--lh-body);
   color: var(--c-ink);
   background-color: var(--c-bg);
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -43,7 +45,7 @@ h2,
 h3,
 h4 {
   line-height: var(--lh-tight);
-  font-weight: 650;
+  font-weight: 600;
   letter-spacing: -0.01em;
   text-wrap: balance;
 }
@@ -62,14 +64,17 @@ p {
   text-wrap: pretty;
 }
 
+/* The lamp colour is on link underlines and on hover only (DESIGN.md 9). */
 a {
-  color: var(--c-accent);
-  text-decoration: none;
-  transition: color var(--dur) var(--ease);
+  color: var(--c-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--c-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
 }
 
 a:hover {
-  color: var(--c-accent-hover);
+  color: var(--c-accent);
 }
 
 :focus-visible {
@@ -88,19 +93,17 @@ a:hover {
 
 main {
   flex: 1 0 auto;
-  padding-block: var(--sp-6) var(--sp-8);
+  padding-block: var(--sp-5) var(--sp-8);
 }
 
 section + section {
   margin-top: var(--sp-7);
 }
 
+/* The page name above a heading on the inner pages: plain, sentence case. */
 .eyebrow {
-  font-size: var(--fs-300);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: var(--fs-400);
   color: var(--c-muted);
-  font-weight: 600;
 }
 
 .lead {
@@ -153,29 +156,7 @@ section + section {
   border: 0;
 }
 
-/* ---------- Motion (only when the user allows it) ---------- */
-@media (prefers-reduced-motion: no-preference) {
-  .reveal {
-    opacity: 0;
-    transform: translateY(10px);
-    animation: rise var(--dur) var(--ease) forwards;
-  }
-
-  .reveal-2 {
-    animation-delay: 70ms;
-  }
-  .reveal-3 {
-    animation-delay: 140ms;
-  }
-
-  @keyframes rise {
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-}
-
+/* ---------- Motion: nothing moves by itself (DESIGN.md section 2) ---------- */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

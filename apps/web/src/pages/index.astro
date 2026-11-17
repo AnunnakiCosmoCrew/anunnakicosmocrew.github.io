@@ -10,6 +10,7 @@ import {
   sentence,
   fairTerms,
   fairTermsLine,
+  hasFairTerms,
   contactSentence,
   contactAddress,
 } from '../lib/home-copy';
@@ -48,6 +49,7 @@ const terms = fairTerms.filter((t) => t.confirmed);
     </ul>
   </section>
 
+  {hasFairTerms() && (
   <section class="container fair" id="fair-terms" aria-labelledby="fair-title">
     <Image
       class="fair-picture"
@@ -58,15 +60,12 @@ const terms = fairTerms.filter((t) => t.confirmed);
     />
     <div class="fair-text">
       <h2 id="fair-title" class="fair-line">{fairTermsLine}</h2>
-      {
-        terms.length > 0 && (
-          <ul class="fair-terms">
-            {terms.map((t) => <li>{t.text}</li>)}
-          </ul>
-        )
-      }
+      <ul class="fair-terms">
+        {terms.map((t) => <li>{t.text}</li>)}
+      </ul>
     </div>
   </section>
+  )}
 
   <section class="container contact" id="contact" aria-labelledby="contact-title">
     <h2 id="contact-title" class="visually-hidden">Contact</h2>

@@ -1,12 +1,14 @@
 ---
 import { withBase } from '../lib/url';
+import { hasFairTerms } from '../lib/home-copy';
 
 // The home page sections (DESIGN.md section 5). From any other page these
 // lead back to the home page's sections.
 const home = withBase('');
+// "Fair terms" shows only while the section does (home-copy.ts).
 const navItems = [
   { label: 'Apps', href: `${home}#apps` },
-  { label: 'Fair terms', href: `${home}#fair-terms` },
+  ...(hasFairTerms() ? [{ label: 'Fair terms', href: `${home}#fair-terms` }] : []),
   { label: 'Contact', href: `${home}#contact` },
 ];
 ---

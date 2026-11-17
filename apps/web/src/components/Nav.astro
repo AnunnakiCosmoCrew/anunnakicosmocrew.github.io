@@ -13,7 +13,17 @@ const navItems = [
 
 <header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href={home}>CosmoCrew</a>
+    <!-- The CosmoCrew mark "Glide" beside the name (luvita-docs/brand/README.md).
+         The two shapes are the brand file's, unchanged: never mirror, rotate,
+         outline or animate the bird. It takes the ink and lamp tokens, so it
+         follows both themes. -->
+    <a class="brand" href={home}>
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path class="bird" d="M31.5 13.5L27 10.5L24 10L21.5 11.5L12 5L2 2L5 5.5L1 6L4.5 9L1.5 10L13 15L8.5 18.5L3 19.5L0.5 23.5L5 26L10.5 22.5L17 20.5L24 27.5L30.5 30.5L26.5 22.5L23.5 17.5L25 15.5L24.5 14.5L27.5 14.5Z"></path>
+        <circle class="eye" cx="24.6" cy="12.2" r="1"></circle>
+      </svg>
+      <span>CosmoCrew</span>
+    </a>
 
     <nav class="site-nav" aria-label="Primary">
       <ul>
@@ -33,18 +43,39 @@ const navItems = [
   .header-inner {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     gap: var(--sp-2) var(--sp-5);
     padding-block: var(--sp-5) var(--sp-3);
   }
 
   .brand {
+    /* Above 24 px, so the full drawing (eye and wing fingers), not the small
+       one. The gap is the brand's clear space: one eighth of the mark. */
+    --mark: 1.6em;
+
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--mark) / 8);
     color: var(--c-ink);
     font-size: var(--fs-500);
     font-weight: 600;
     letter-spacing: -0.01em;
     text-decoration: none;
+  }
+
+  .brand-mark {
+    flex: none;
+    width: var(--mark);
+    height: var(--mark);
+  }
+
+  .bird {
+    fill: var(--c-ink);
+  }
+
+  .eye {
+    fill: var(--c-lamp);
   }
 
   .site-nav ul {

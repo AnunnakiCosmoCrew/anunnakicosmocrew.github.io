@@ -1,0 +1,36 @@
+<!doctype html>
+<!-- Source of apps/web/public/og.png (1200 x 630): the CosmoCrew mark and the
+     name on the light ground, nothing else. Not served by the site.
+     Render it with a headless Chromium at 1200 x 630, device scale 1:
+       chrome-headless-shell --headless --hide-scrollbars --window-size=1200,630 \
+         --force-device-scale-factor=1 --screenshot=../../../public/og.png og-card.html
+     A sentence added here is copy and needs a founder look. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: 'Hanken Grotesk';
+        src: url('../fonts/hanken-grotesk-latin-wght.woff2') format('woff2');
+        font-weight: 100 900;
+      }
+      html, body { margin: 0; width: 1200px; height: 630px; background: #eceef0; }
+      .lockup {
+        position: absolute; left: 96px; top: 0; height: 630px;
+        display: flex; align-items: center; gap: 24px;
+        font: 600 120px/1 'Hanken Grotesk', sans-serif;
+        letter-spacing: -0.01em; color: #131920;
+      }
+      svg { width: 192px; height: 192px; flex: none; }
+    </style>
+  </head>
+  <body>
+    <div class="lockup">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path fill="#131920" d="M31.5 13.5L27 10.5L24 10L21.5 11.5L12 5L2 2L5 5.5L1 6L4.5 9L1.5 10L13 15L8.5 18.5L3 19.5L0.5 23.5L5 26L10.5 22.5L17 20.5L24 27.5L30.5 30.5L26.5 22.5L23.5 17.5L25 15.5L24.5 14.5L27.5 14.5Z" />
+        <circle cx="24.6" cy="12.2" r="1" fill="#75501a" />
+      </svg>
+      <span>CosmoCrew</span>
+    </div>
+  </body>
+</html>
